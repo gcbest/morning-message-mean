@@ -45,11 +45,11 @@ app.use('/users', users);
 
 // Index Route
 app.get('/', (req,res) => {
-  res.send('Nothing here');
+  res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/index.html'));
+  res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
 // Start Server
