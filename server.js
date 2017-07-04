@@ -43,13 +43,9 @@ require('./config/passport')(passport);
 // Routes
 app.use('/users', users);
 
-// Index Route
-app.get('/', (req,res) => {
-  res.sendFile(path.join(__dirname, 'dist/index.html'));
-});
-
+// All routes lead here
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/index.html'));
+  res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
 // Start Server
