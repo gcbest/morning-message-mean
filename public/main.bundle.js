@@ -90,6 +90,7 @@ AppComponent = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_angular2_flash_messages__ = __webpack_require__("../../../../angular2-flash-messages/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_angular2_flash_messages___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_14_angular2_flash_messages__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__guards_auth_guard__ = __webpack_require__("../../../../../src/app/guards/auth.guard.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__services_apiCall_service__ = __webpack_require__("../../../../../src/app/services/apiCall.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -97,6 +98,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -143,7 +145,7 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_4__angular_router__["a" /* RouterModule */].forRoot(appRoutes),
             __WEBPACK_IMPORTED_MODULE_14_angular2_flash_messages__["FlashMessagesModule"],
         ],
-        providers: [__WEBPACK_IMPORTED_MODULE_12__services_validate_service__["a" /* ValidateService */], __WEBPACK_IMPORTED_MODULE_13__services_auth_service__["a" /* AuthService */], __WEBPACK_IMPORTED_MODULE_15__guards_auth_guard__["a" /* AuthGuard */]],
+        providers: [__WEBPACK_IMPORTED_MODULE_12__services_validate_service__["a" /* ValidateService */], __WEBPACK_IMPORTED_MODULE_13__services_auth_service__["a" /* AuthService */], __WEBPACK_IMPORTED_MODULE_15__guards_auth_guard__["a" /* AuthGuard */], __WEBPACK_IMPORTED_MODULE_16__services_apiCall_service__["a" /* APICallService */]],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_5__app_component__["a" /* AppComponent */]]
     })
 ], AppModule);
@@ -173,7 +175,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n"
+module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n\n<form (submit)=\"onMsgChoiceSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Positivity</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasPositivity\" name=\"hasPositivity\" class=\"form-control\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n</form>\n"
 
 /***/ }),
 
@@ -182,6 +184,7 @@ module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>W
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_apiCall_service__ = __webpack_require__("../../../../../src/app/services/apiCall.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DashboardComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -193,10 +196,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
 var DashboardComponent = (function () {
-    function DashboardComponent() {
+    function DashboardComponent(apiCallService) {
+        this.apiCallService = apiCallService;
     }
     DashboardComponent.prototype.ngOnInit = function () {
+    };
+    DashboardComponent.prototype.onMsgChoiceSubmit = function () {
+        // create an object with all the choices
+        // iterate over the choices, if they are true make api call
+        var userSelections = {
+            hasWeather: this.hasWeather,
+            hasPositivity: this.hasPositivity
+        };
+        for (var property in userSelections) {
+            if (userSelections.hasOwnProperty(property)) {
+                switch (property) {
+                    case 'hasWeather':
+                        if (userSelections[property] === true) {
+                            this.apiCallService.callWeatherAPI('07103').subscribe(function (weather) {
+                                console.log(weather);
+                            });
+                        }
+                }
+            }
+        }
     };
     return DashboardComponent;
 }());
@@ -206,9 +231,10 @@ DashboardComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/components/dashboard/dashboard.component.html"),
         styles: [__webpack_require__("../../../../../src/app/components/dashboard/dashboard.component.css")]
     }),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_apiCall_service__["a" /* APICallService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__services_apiCall_service__["a" /* APICallService */]) === "function" && _a || Object])
 ], DashboardComponent);
 
+var _a;
 //# sourceMappingURL=dashboard.component.js.map
 
 /***/ }),
@@ -295,7 +321,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/login/login.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2 class=\"page-header\">Login</h2>\n<form (submit)=\"onLoginSubmit()\">\n  <div class=\"form-group\">\n    <label>Username</label>\n    <input type=\"text\" class=\"form-control\" [(ngModel)]=\"username\" name=\"username\">\n  </div>\n  <div class=\"form-group\">\n    <label>Password</label>\n    <input type=\"text\" class=\"form-control\" [(ngModel)]=\"password\" name=\"password\">\n  </div>\n  <input type=\"submit\" class=\"btn btn-primary\" value=\"Login\">\n</form>\n"
+module.exports = "<h2 class=\"page-header\">Login</h2>\n<form (submit)=\"onLoginSubmit()\">\n  <div class=\"form-group\">\n    <label>Username</label>\n    <input type=\"text\" class=\"form-control\" [(ngModel)]=\"username\" name=\"username\">\n  </div>\n  <div class=\"form-group\">\n    <label>Password</label>\n    <input type=\"password\" class=\"form-control\" [(ngModel)]=\"password\" name=\"password\">\n  </div>\n  <input type=\"submit\" class=\"btn btn-primary\" value=\"Login\">\n</form>\n"
 
 /***/ }),
 
@@ -664,6 +690,57 @@ AuthGuard = __decorate([
 
 var _a, _b;
 //# sourceMappingURL=auth.guard.js.map
+
+/***/ }),
+
+/***/ "../../../../../src/app/services/apiCall.service.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return APICallService; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+var APICallService = (function () {
+    function APICallService(http) {
+        this.http = http;
+    }
+    APICallService.prototype.callWeatherAPI = function (location) {
+        var OPEN_WEATHER_MAP_URL = 'http://api.openweathermap.org/data/2.5/weather?appid=7486057fd080d966249b2b5959530883&units=imperial';
+        var encodedLocation = encodeURIComponent(location);
+        var requestURL = OPEN_WEATHER_MAP_URL + "&q=" + encodedLocation;
+        return this.http.get(requestURL).map(function (res) { return res.json(); });
+        //   if (res.data.cod && res.data.message) {
+        //     throw new Error(res.data.message);
+        //   } else {
+        //     return res.data.main.temp;
+        //   }
+        // }, function (err) {
+        //   throw new Error(err.response.data.message);
+        // });
+    };
+    return APICallService;
+}());
+APICallService = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["Http"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["Http"]) === "function" && _a || Object])
+], APICallService);
+
+var _a;
+//# sourceMappingURL=apiCall.service.js.map
 
 /***/ }),
 
