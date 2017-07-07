@@ -185,6 +185,8 @@ module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>W
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_apiCall_service__ = __webpack_require__("../../../../../src/app/services/apiCall.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DashboardComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -197,38 +199,55 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
 var DashboardComponent = (function () {
     function DashboardComponent(apiCallService) {
         this.apiCallService = apiCallService;
+        this.hasWeather = false;
+        this.hasNews = false;
     }
     DashboardComponent.prototype.ngOnInit = function () {
     };
     DashboardComponent.prototype.onMsgChoiceSubmit = function () {
         // create an object with all the choices
+        var _this = this;
         // iterate over the choices, if they are true make api call
         var userSelections = {
             hasWeather: this.hasWeather,
-            hasPositivity: this.hasPositivity,
             hasNews: this.hasNews
         };
+        var promiseArr = [];
+        // add promises to promise array
+        // promise.all()
+        // .then() call send text message service and pass in data
         for (var property in userSelections) {
+            console.log('property:  ', property, userSelections[property] === true);
+            console.log(userSelections);
             if (userSelections.hasOwnProperty(property)) {
                 switch (property) {
                     case 'hasWeather':
-                        if (userSelections[property] === true) {
-                            this.apiCallService.getWeather('07103').subscribe(function (weather) {
-                                console.log(weather);
+                        if (userSelections[property] == true) {
+                            var weatherPromise = new Promise(function (resolve, reject) {
+                                resolve(_this.apiCallService.getWeather('07103'));
                             });
+                            promiseArr.push(weatherPromise);
                         }
+                        break;
                     case 'hasNews':
-                        if (userSelections[property] === true) {
-                            this.apiCallService.getNews('cnn').subscribe(function (news) {
-                                console.log(news);
+                        if (userSelections[property] == true) {
+                            var newsPromise = new Promise(function (resolve, reject) {
+                                resolve(_this.apiCallService.getNews('cnn'));
                             });
+                            promiseArr.push(newsPromise);
                         }
+                        break;
                 }
             }
         }
+        console.log('PRMOISE ARR', promiseArr);
+        Promise.all(promiseArr).then(function (results) {
+            console.log(results);
+        });
         // // Twilio Credentials
         // const accountSid = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
         // const authToken = 'your_auth_token';
@@ -723,6 +742,8 @@ var _a, _b;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_toPromise__ = __webpack_require__("../../../../rxjs/add/operator/toPromise.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_toPromise___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_toPromise__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return APICallService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -736,18 +757,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var APICallService = (function () {
     function APICallService(http) {
         this.http = http;
     }
     // Weather API
     APICallService.prototype.getWeather = function (location) {
-        return this.http.get("/api/weather?location=" + location).map(function (res) { return res.json(); });
+        console.log('this.http.get(`/api/weather?location=${location}`):   ', this.http.get("/api/weather?location=" + location).toPromise().then(function (data) { return data; }));
+        return this.http.get("/api/weather?location=" + location).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     // News API
     APICallService.prototype.getNews = function (source) {
         source = 'cnn';
-        return this.http.get("/api/news?source=" + source).map(function (res) { return res.json(); });
+        console.log('CNN http.get: ', this.http.get("/api/news?source=" + source).toPromise().then(function (data) { return data; }));
+        return this.http.get("/api/news?source=" + source).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     // Directions API
     APICallService.prototype.getDirections = function (homeAddress, workAddress) {

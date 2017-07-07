@@ -1,23 +1,26 @@
 import { Injectable } from '@angular/core';
 import {Http} from '@angular/http';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class APICallService {
-  apiCallsRemaining: 10;
-  returnedData: [Promise<any>];
+  apiCallsRemaining;
+  returnedData: [String];
 
   constructor(private http: Http) { }
 
   // Weather API
   getWeather(location) {
-    return this.http.get(`/api/weather?location=${location}`).map(res => res.json());
+    console.log('this.http.get(`/api/weather?location=${location}`):   ', this.http.get(`/api/weather?location=${location}`).toPromise().then((data) => {return data}));
+    return this.http.get(`/api/weather?location=${location}`).map(res => res.json()).toPromise().then((data) => {return data});
   }
 
   // News API
   getNews(source) {
     source = 'cnn';
-    return this.http.get(`/api/news?source=${source}`).map(res => res.json());
+    console.log('CNN http.get: ', this.http.get(`/api/news?source=${source}`).toPromise().then((data) => {return data}));
+    return this.http.get(`/api/news?source=${source}`).map(res => res.json()).toPromise().then((data) => {return data});
   }
 
   // Directions API

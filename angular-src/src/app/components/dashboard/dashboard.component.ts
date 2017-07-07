@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import {APICallService} from '../../services/apiCall.service';
+import 'rxjs/add/operator/map';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,8 +9,8 @@ import {APICallService} from '../../services/apiCall.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  hasWeather: Boolean;
-  hasNews: Boolean;
+  hasWeather: Boolean = false;
+  hasNews: Boolean = false;
   hasPositivity: Boolean;
 
   constructor(private apiCallService: APICallService) { }
@@ -24,30 +25,45 @@ export class DashboardComponent implements OnInit {
 
     var userSelections = {
       hasWeather: this.hasWeather,
-      hasPositivity: this.hasPositivity,
       hasNews: this.hasNews
     };
 
+    var promiseArr = [];
+
+    // add promises to promise array
+    // promise.all()
+    // .then() call send text message service and pass in data
+
     for (var property in userSelections) {
+      console.log('property:  ', property, userSelections[property] === true);
+      console.log(userSelections);
       if (userSelections.hasOwnProperty(property)) {
         switch(property) {
           case 'hasWeather':
-            if (userSelections[property] === true) {
-              this.apiCallService.getWeather('07103').subscribe((weather) => {
-                console.log(weather);
+            if (userSelections[property] == true) {
+              var weatherPromise = new Promise( (resolve, reject) => {
+                resolve(this.apiCallService.getWeather('07103'));
               });
+              promiseArr.push(weatherPromise);
             }
+            break;
           case 'hasNews':
-            if (userSelections[property] === true) {
-              this.apiCallService.getNews('cnn').subscribe((news) => {
-                console.log(news);
+            if (userSelections[property] == true) {
+              var newsPromise = new Promise((resolve, reject) => {
+                resolve(this.apiCallService.getNews('cnn'));
               });
+              promiseArr.push(newsPromise);
             }
+            break;
         }
       }
-
-
     }
+
+    console.log('PRMOISE ARR', promiseArr);
+    Promise.all(promiseArr).then((results) => {
+      console.log(results);
+    });
+
 
     // // Twilio Credentials
     // const accountSid = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
@@ -64,9 +80,6 @@ export class DashboardComponent implements OnInit {
     //     mediaUrl: 'https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg',
     //   })
     //   .then((message) => console.log(message.sid));
-
-
-
 
   }
 

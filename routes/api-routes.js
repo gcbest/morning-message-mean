@@ -14,7 +14,6 @@ router.get('/weather', (req, res) => {
 
     axios.get(requestURL).then(function(response) {
         res.json(response.data.main.temp);
-        // return response.data.main.temp;
     });
 });
 
@@ -23,7 +22,8 @@ router.get('/news', (req, res) => {
     const NEWS_API_URL = `https://newsapi.org/v1/articles?source=${source}&sortBy=top&apiKey=96cc8c5dfcc34d8797a4fdeb9f2b5d43`;
 
     axios.get(NEWS_API_URL).then(function(response) {
-        res.json(response);
+        res.json(response.data.articles);
+        // return response.data.articles;
     });
 });
 
