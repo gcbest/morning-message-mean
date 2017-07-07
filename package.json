@@ -7,15 +7,18 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server"
   },
-  "dependencies":{
-    "express":"*",
-    "mongoose":"*",
-    "bcryptjs":"*",
-    "cors":"*",
-    "jsonwebtoken":"*",
-    "body-parser":"*",
-    "passport":"*",
-    "passport-jwt":"*"
+  "dependencies": {
+    "axios": "^0.16.2",
+    "bcryptjs": "*",
+    "body-parser": "*",
+    "cors": "*",
+    "dotenv": "^4.0.0",
+    "express": "*",
+    "jsonwebtoken": "*",
+    "mongoose": "*",
+    "passport": "*",
+    "passport-jwt": "*",
+    "request": "^2.81.0"
   },
   "author": "Brad Traversy",
   "license": "ISC"

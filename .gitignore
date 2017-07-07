@@ -7,6 +7,7 @@
 
 # dependencies
 /node_modules
+/angular-src/node_modules
 
 # IDEs and editors
 /.idea
@@ -32,6 +33,7 @@
 npm-debug.log
 testem.log
 /typings
+.env
 
 # e2e
 /e2e/*.js
@@ -40,3 +42,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+

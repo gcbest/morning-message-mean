@@ -2,28 +2,32 @@ import { Injectable } from '@angular/core';
 import {Http} from '@angular/http';
 import 'rxjs/add/operator/map';
 
-import axios from 'axios'; // ****** <----- remove
-
 @Injectable()
 export class APICallService {
+  apiCallsRemaining: 10;
+  returnedData: [Promise<any>];
 
   constructor(private http: Http) { }
 
-  callWeatherAPI(location) {
-    const OPEN_WEATHER_MAP_URL = 'http://api.openweathermap.org/data/2.5/weather?appid=7486057fd080d966249b2b5959530883&units=imperial';
+  // Weather API
+  getWeather(location) {
+    return this.http.get(`/api/weather?location=${location}`).map(res => res.json());
+  }
 
-    var encodedLocation = encodeURIComponent(location);
-    var requestURL = `${OPEN_WEATHER_MAP_URL}&q=${encodedLocation}`;
+  // News API
+  getNews(source) {
+    source = 'cnn';
+    return this.http.get(`/api/news?source=${source}`).map(res => res.json());
+  }
 
-    return this.http.get(requestURL).map(res => res.json());
+  // Directions API
+  getDirections(homeAddress, workAddress) {
 
-      //   if (res.data.cod && res.data.message) {
-    //     throw new Error(res.data.message);
-    //   } else {
-    //     return res.data.main.temp;
-    //   }
-    // }, function (err) {
-    //   throw new Error(err.response.data.message);
-    // });
+  }
+
+  // Messaging API
+  sendSMS(phoneNum, text) {
+    const MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=9847decf&api_secret=c541e6fccef188fc&to=${phoneNum}&from=12035338496&text=${text}`
+    return this.http.get(MESSAGING_API_URL).map(res => res.json());
   }
 }

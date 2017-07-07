@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors'); // allows you to make requests to your api from a different domain name/port
+require('dotenv').config();
 const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database');
@@ -22,6 +23,7 @@ mongoose.connection.on('error', (err) => {
 const app = express();
 
 const users = require('./routes/user-routes');
+const api = require('./routes/api-routes');
 
 const port = process.env.PORT || 4000;
 
@@ -42,6 +44,7 @@ require('./config/passport')(passport);
 
 // Routes
 app.use('/users', users);
+app.use('/api', api);
 
 // All routes lead here
 app.get('*', (req, res) => {

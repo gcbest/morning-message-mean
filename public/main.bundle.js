@@ -175,7 +175,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n\n<form (submit)=\"onMsgChoiceSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Positivity</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasPositivity\" name=\"hasPositivity\" class=\"form-control\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n</form>\n"
+module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n\n<form (submit)=\"onMsgChoiceSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n</form>\n"
 
 /***/ }),
 
@@ -208,20 +208,42 @@ var DashboardComponent = (function () {
         // iterate over the choices, if they are true make api call
         var userSelections = {
             hasWeather: this.hasWeather,
-            hasPositivity: this.hasPositivity
+            hasPositivity: this.hasPositivity,
+            hasNews: this.hasNews
         };
         for (var property in userSelections) {
             if (userSelections.hasOwnProperty(property)) {
                 switch (property) {
                     case 'hasWeather':
                         if (userSelections[property] === true) {
-                            this.apiCallService.callWeatherAPI('07103').subscribe(function (weather) {
+                            this.apiCallService.getWeather('07103').subscribe(function (weather) {
                                 console.log(weather);
+                            });
+                        }
+                    case 'hasNews':
+                        if (userSelections[property] === true) {
+                            this.apiCallService.getNews('cnn').subscribe(function (news) {
+                                console.log(news);
                             });
                         }
                 }
             }
         }
+        // // Twilio Credentials
+        // const accountSid = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+        // const authToken = 'your_auth_token';
+        //
+        // // require the Twilio module and create a REST client
+        // const client = require('twilio')(accountSid, authToken);
+        //
+        // client.messages
+        //   .create({
+        //     to: '+19734946092',
+        //     from: '+12015711416',
+        //     body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
+        //     mediaUrl: 'https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg',
+        //   })
+        //   .then((message) => console.log(message.sid));
     };
     return DashboardComponent;
 }());
@@ -718,19 +740,22 @@ var APICallService = (function () {
     function APICallService(http) {
         this.http = http;
     }
-    APICallService.prototype.callWeatherAPI = function (location) {
-        var OPEN_WEATHER_MAP_URL = 'http://api.openweathermap.org/data/2.5/weather?appid=7486057fd080d966249b2b5959530883&units=imperial';
-        var encodedLocation = encodeURIComponent(location);
-        var requestURL = OPEN_WEATHER_MAP_URL + "&q=" + encodedLocation;
-        return this.http.get(requestURL).map(function (res) { return res.json(); });
-        //   if (res.data.cod && res.data.message) {
-        //     throw new Error(res.data.message);
-        //   } else {
-        //     return res.data.main.temp;
-        //   }
-        // }, function (err) {
-        //   throw new Error(err.response.data.message);
-        // });
+    // Weather API
+    APICallService.prototype.getWeather = function (location) {
+        return this.http.get("/api/weather?location=" + location).map(function (res) { return res.json(); });
+    };
+    // News API
+    APICallService.prototype.getNews = function (source) {
+        source = 'cnn';
+        return this.http.get("/api/news?source=" + source).map(function (res) { return res.json(); });
+    };
+    // Directions API
+    APICallService.prototype.getDirections = function (homeAddress, workAddress) {
+    };
+    // Messaging API
+    APICallService.prototype.sendSMS = function (phoneNum, text) {
+        var MESSAGING_API_URL = "https://rest.nexmo.com/sms/json?api_key=9847decf&api_secret=c541e6fccef188fc&to=" + phoneNum + "&from=12035338496&text=" + text;
+        return this.http.get(MESSAGING_API_URL).map(function (res) { return res.json(); });
     };
     return APICallService;
 }());
