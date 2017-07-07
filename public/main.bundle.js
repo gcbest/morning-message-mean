@@ -764,13 +764,11 @@ var APICallService = (function () {
     }
     // Weather API
     APICallService.prototype.getWeather = function (location) {
-        console.log('this.http.get(`/api/weather?location=${location}`):   ', this.http.get("/api/weather?location=" + location).toPromise().then(function (data) { return data; }));
         return this.http.get("/api/weather?location=" + location).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     // News API
     APICallService.prototype.getNews = function (source) {
         source = 'cnn';
-        console.log('CNN http.get: ', this.http.get("/api/news?source=" + source).toPromise().then(function (data) { return data; }));
         return this.http.get("/api/news?source=" + source).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     // Directions API
