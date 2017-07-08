@@ -19,24 +19,17 @@ export class DashboardComponent implements OnInit {
   }
 
   onMsgChoiceSubmit() {
-    // create an object with all the choices
-
-    // iterate over the choices, if they are true make api call
-
+    // Create an object with all the choices
     var userSelections = {
       hasWeather: this.hasWeather,
       hasNews: this.hasNews
     };
 
+    // Add promises to promise array
     var promiseArr = [];
 
-    // add promises to promise array
-    // promise.all()
-    // .then() call send text message service and pass in data
-
+    // Iterate over the user's choices, if they are true make api call
     for (var property in userSelections) {
-      console.log('property:  ', property, userSelections[property] === true);
-      console.log(userSelections);
       if (userSelections.hasOwnProperty(property)) {
         switch(property) {
           case 'hasWeather':
@@ -53,7 +46,15 @@ export class DashboardComponent implements OnInit {
             if (userSelections[property] === true) {
               var newsPromise = new Promise((resolve, reject) => {
                 this.apiCallService.getNews('cnn').then(articlesArr => {
-                  var headline = articlesArr[0].title + '\n' + articlesArr[0].url;
+                  var headline = "";
+                  for(var i = 0; i < 3; i++) {
+                    headline += articlesArr[i].title + '\n' + articlesArr[i].url + '\n';
+                  }
+                  debugger;
+                  console.log('headline before enocoding', headline);
+                  headline = encodeURIComponent(headline);
+                  console.log('headline AFTER enocoding', headline);
+                  debugger;
                   resolve(headline);
                 });
               });
@@ -67,7 +68,8 @@ export class DashboardComponent implements OnInit {
     console.log('PROMISE ARR', promiseArr);
     Promise.all(promiseArr).then((results) => {
       console.log('results ', results);
-      this.apiCallService.sendSMS('19734946092', results.join(', '));
+      var formattedURL =  encodeURIComponent(results.join('\n \n'));
+      this.apiCallService.sendSMS('19734946092', formattedURL);
     }).catch( err => {
       console.log(err);
     });

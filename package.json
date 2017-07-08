@@ -14,11 +14,11 @@
     "cors": "*",
     "dotenv": "^4.0.0",
     "express": "*",
+    "json-stringify-safe": "^5.0.1",
     "jsonwebtoken": "*",
     "mongoose": "*",
     "passport": "*",
-    "passport-jwt": "*",
-    "request": "^2.81.0"
+    "passport-jwt": "*"
   },
   "author": "Brad Traversy",
   "license": "ISC"

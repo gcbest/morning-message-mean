@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var request = require('request');
 var axios = require('axios');
+var stringify = require('json-stringify-safe');
+
 
 var api_keys = require('../config/api');
 
@@ -30,7 +31,7 @@ router.get('/sendsms', (req, res) => {
     var MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=${api_keys.nexmoAPIKey}&api_secret=${api_keys.nexmoAPISecret}&to=${req.query.phoneNum}&from=12035338496&text=${req.query.text}`;
     console.log('nexmo: ', MESSAGING_API_URL);
     axios.get(MESSAGING_API_URL).then(function(response) {
-       res.send(response);
+       res.send(stringify(response.status, null, 2));
     }, function (rejection) {
         console.log(rejection);
         return;
