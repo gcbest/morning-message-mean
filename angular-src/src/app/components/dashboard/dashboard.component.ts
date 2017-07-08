@@ -40,16 +40,20 @@ export class DashboardComponent implements OnInit {
       if (userSelections.hasOwnProperty(property)) {
         switch(property) {
           case 'hasWeather':
-            if (userSelections[property] == true) {
+            if (userSelections[property] === true) {
               var weatherPromise = new Promise( (resolve, reject) => {
+                // var temp = this.apiCallService.getWeather('07103').toString();
+                // "Today's Temperature: " + temp + ' Degrees F'
                 resolve(this.apiCallService.getWeather('07103'));
               });
               promiseArr.push(weatherPromise);
             }
             break;
           case 'hasNews':
-            if (userSelections[property] == true) {
+            if (userSelections[property] === true) {
               var newsPromise = new Promise((resolve, reject) => {
+                // var newsArr = this.apiCallService.getNews('cnn');
+                // var headline = newsArr[0].title + '\n' + newsArr[0].url;
                 resolve(this.apiCallService.getNews('cnn'));
               });
               promiseArr.push(newsPromise);
@@ -59,9 +63,13 @@ export class DashboardComponent implements OnInit {
       }
     }
 
-    console.log('PRMOISE ARR', promiseArr);
+    console.log('PROMISE ARR', promiseArr);
     Promise.all(promiseArr).then((results) => {
-      console.log(results);
+      console.log('results ', results);
+      var x = this.apiCallService.sendSMS('19734946092', results.join(', '));
+      console.log(x);
+    }).catch( err => {
+      console.log(err);
     });
 
 

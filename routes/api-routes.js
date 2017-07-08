@@ -23,8 +23,17 @@ router.get('/news', (req, res) => {
 
     axios.get(NEWS_API_URL).then(function(response) {
         res.json(response.data.articles);
-        // return response.data.articles;
     });
+});
+
+router.get('/sendsms', (req, res) => {
+    var MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=9847decf&api_secret=c541e6fccef188fc&to=${req.query.phoneNum}&from=12035338496&text=${req.query.text}`;
+    console.log('nexmo: ', MESSAGING_API_URL);
+    axios.get(MESSAGING_API_URL).then(function(response) {
+       res.send(response);
+    }, function (rejection) {
+        console.log(rejection);
+    }).catch(function (err) { console.log(err) });
 });
 
 module.exports = router;

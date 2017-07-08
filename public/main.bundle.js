@@ -226,16 +226,20 @@ var DashboardComponent = (function () {
             if (userSelections.hasOwnProperty(property)) {
                 switch (property) {
                     case 'hasWeather':
-                        if (userSelections[property] == true) {
+                        if (userSelections[property] === true) {
                             var weatherPromise = new Promise(function (resolve, reject) {
+                                // var temp = this.apiCallService.getWeather('07103').toString();
+                                // "Today's Temperature: " + temp + ' Degrees F'
                                 resolve(_this.apiCallService.getWeather('07103'));
                             });
                             promiseArr.push(weatherPromise);
                         }
                         break;
                     case 'hasNews':
-                        if (userSelections[property] == true) {
+                        if (userSelections[property] === true) {
                             var newsPromise = new Promise(function (resolve, reject) {
+                                // var newsArr = this.apiCallService.getNews('cnn');
+                                // var headline = newsArr[0].title + '\n' + newsArr[0].url;
                                 resolve(_this.apiCallService.getNews('cnn'));
                             });
                             promiseArr.push(newsPromise);
@@ -244,9 +248,13 @@ var DashboardComponent = (function () {
                 }
             }
         }
-        console.log('PRMOISE ARR', promiseArr);
+        console.log('PROMISE ARR', promiseArr);
         Promise.all(promiseArr).then(function (results) {
-            console.log(results);
+            console.log('results ', results);
+            var x = _this.apiCallService.sendSMS('19734946092', results.join(', '));
+            console.log(x);
+        }).catch(function (err) {
+            console.log(err);
         });
         // // Twilio Credentials
         // const accountSid = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
@@ -776,8 +784,8 @@ var APICallService = (function () {
     };
     // Messaging API
     APICallService.prototype.sendSMS = function (phoneNum, text) {
-        var MESSAGING_API_URL = "https://rest.nexmo.com/sms/json?api_key=9847decf&api_secret=c541e6fccef188fc&to=" + phoneNum + "&from=12035338496&text=" + text;
-        return this.http.get(MESSAGING_API_URL).map(function (res) { return res.json(); });
+        console.log('sms service called');
+        return this.http.get("/api/sendsms?phoneNum=" + phoneNum + "&text=" + text).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     return APICallService;
 }());
