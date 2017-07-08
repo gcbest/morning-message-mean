@@ -228,9 +228,9 @@ var DashboardComponent = (function () {
                     case 'hasWeather':
                         if (userSelections[property] === true) {
                             var weatherPromise = new Promise(function (resolve, reject) {
-                                // var temp = this.apiCallService.getWeather('07103').toString();
-                                // "Today's Temperature: " + temp + ' Degrees F'
-                                resolve(_this.apiCallService.getWeather('07103'));
+                                _this.apiCallService.getWeather('07103').then(function (temp) {
+                                    resolve("Today's Temperature: " + temp + ' Degrees F');
+                                });
                             });
                             promiseArr.push(weatherPromise);
                         }
@@ -238,9 +238,10 @@ var DashboardComponent = (function () {
                     case 'hasNews':
                         if (userSelections[property] === true) {
                             var newsPromise = new Promise(function (resolve, reject) {
-                                // var newsArr = this.apiCallService.getNews('cnn');
-                                // var headline = newsArr[0].title + '\n' + newsArr[0].url;
-                                resolve(_this.apiCallService.getNews('cnn'));
+                                _this.apiCallService.getNews('cnn').then(function (articlesArr) {
+                                    var headline = articlesArr[0].title + '\n' + articlesArr[0].url;
+                                    resolve(headline);
+                                });
                             });
                             promiseArr.push(newsPromise);
                         }
@@ -251,8 +252,7 @@ var DashboardComponent = (function () {
         console.log('PROMISE ARR', promiseArr);
         Promise.all(promiseArr).then(function (results) {
             console.log('results ', results);
-            var x = _this.apiCallService.sendSMS('19734946092', results.join(', '));
-            console.log(x);
+            _this.apiCallService.sendSMS('19734946092', results.join(', '));
         }).catch(function (err) {
             console.log(err);
         });

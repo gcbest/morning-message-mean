@@ -27,12 +27,13 @@ router.get('/news', (req, res) => {
 });
 
 router.get('/sendsms', (req, res) => {
-    var MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=9847decf&api_secret=c541e6fccef188fc&to=${req.query.phoneNum}&from=12035338496&text=${req.query.text}`;
+    var MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=${api_keys.nexmoAPIKey}&api_secret=${api_keys.nexmoAPISecret}&to=${req.query.phoneNum}&from=12035338496&text=${req.query.text}`;
     console.log('nexmo: ', MESSAGING_API_URL);
     axios.get(MESSAGING_API_URL).then(function(response) {
        res.send(response);
     }, function (rejection) {
         console.log(rejection);
+        return;
     }).catch(function (err) { console.log(err) });
 });
 

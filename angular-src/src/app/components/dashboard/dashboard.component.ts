@@ -41,10 +41,10 @@ export class DashboardComponent implements OnInit {
         switch(property) {
           case 'hasWeather':
             if (userSelections[property] === true) {
-              var weatherPromise = new Promise( (resolve, reject) => {
-                // var temp = this.apiCallService.getWeather('07103').toString();
-                // "Today's Temperature: " + temp + ' Degrees F'
-                resolve(this.apiCallService.getWeather('07103'));
+              var weatherPromise = new Promise((resolve, reject) => {
+                this.apiCallService.getWeather('07103').then(temp => {
+                  resolve("Today's Temperature: " + temp + ' Degrees F');
+                });
               });
               promiseArr.push(weatherPromise);
             }
@@ -52,9 +52,10 @@ export class DashboardComponent implements OnInit {
           case 'hasNews':
             if (userSelections[property] === true) {
               var newsPromise = new Promise((resolve, reject) => {
-                // var newsArr = this.apiCallService.getNews('cnn');
-                // var headline = newsArr[0].title + '\n' + newsArr[0].url;
-                resolve(this.apiCallService.getNews('cnn'));
+                this.apiCallService.getNews('cnn').then(articlesArr => {
+                  var headline = articlesArr[0].title + '\n' + articlesArr[0].url;
+                  resolve(headline);
+                });
               });
               promiseArr.push(newsPromise);
             }
@@ -66,8 +67,7 @@ export class DashboardComponent implements OnInit {
     console.log('PROMISE ARR', promiseArr);
     Promise.all(promiseArr).then((results) => {
       console.log('results ', results);
-      var x = this.apiCallService.sendSMS('19734946092', results.join(', '));
-      console.log(x);
+      this.apiCallService.sendSMS('19734946092', results.join(', '));
     }).catch( err => {
       console.log(err);
     });
