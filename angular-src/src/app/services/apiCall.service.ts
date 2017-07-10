@@ -27,6 +27,11 @@ export class APICallService {
   // Messaging API
   sendSMS(phoneNum, text) {
     console.log('sms service called');
-    return this.http.get(`/api/sendsms?phoneNum=${phoneNum}&text=${text}`).map(res => res.json()).toPromise().then(data => data);
+    return this.http.get(`/api/sendsms?phone_num=${phoneNum}&text=${text}`).map(res => res.json()).toPromise().then(data => data);
+  }
+
+  setTimedSMS(phoneNum,text) {
+    return this.http.get(`/api/timedsms?phone_num=${phoneNum}&text=${text}`).map(res => res.json()).toPromise().then(data => data);
+
   }
 }

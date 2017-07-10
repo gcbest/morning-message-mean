@@ -12,13 +12,16 @@ export class DashboardComponent implements OnInit {
   hasWeather: Boolean = false;
   hasNews: Boolean = false;
   hasPositivity: Boolean;
+  msgTime: String;
 
   constructor(private apiCallService: APICallService) { }
 
   ngOnInit() {
   }
 
-  onMsgChoiceSubmit() {
+
+
+  setUserSelections() {
     // Create an object with all the choices
     var userSelections = {
       hasWeather: this.hasWeather,
@@ -64,7 +67,11 @@ export class DashboardComponent implements OnInit {
         }
       }
     }
+    return promiseArr;
+  }
 
+  // Resolve all the promises for the user's selections and send SMS
+  sendTextMessage(promiseArr) {
     console.log('PROMISE ARR', promiseArr);
     Promise.all(promiseArr).then((results) => {
       console.log('results ', results);
@@ -73,6 +80,36 @@ export class DashboardComponent implements OnInit {
     }).catch( err => {
       console.log(err);
     });
+  }
+
+
+  // Set the time when the message will be sent
+  setMsgTime() {
+    // Grab the user's input
+
+    // Convert it a time cron can use
+
+    // Set cron to send
+
+
+  }
+
+
+
+  onTestMsgSubmit() {
+
+    var promArr = this.setUserSelections();
+    Promise.all(promArr).then((results) => {
+      var formattedURL =  encodeURIComponent(results.join('\n \n'));
+      this.apiCallService.setTimedSMS('19734946092', formattedURL);
+    }).catch( err => {
+      console.log(err);
+    });
+
+
+
+
+
 
 
     // // Twilio Credentials
@@ -90,6 +127,11 @@ export class DashboardComponent implements OnInit {
     //     mediaUrl: 'https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg',
     //   })
     //   .then((message) => console.log(message.sid));
+
+  }
+
+  onMsgSelectionSubmit() {
+    // Set the time when the message will be sent
 
   }
 

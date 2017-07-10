@@ -175,7 +175,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n\n<form (submit)=\"onMsgChoiceSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n</form>\n"
+module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n\n<form (submit)=\"onTestMsgSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Time to Send Message</label>\n    <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n  <input type=\"button\" onClick=\"\" value=\"Send a Test Message\" class=\"btn btn-success\">\n</form>\n"
 
 /***/ }),
 
@@ -208,7 +208,7 @@ var DashboardComponent = (function () {
     }
     DashboardComponent.prototype.ngOnInit = function () {
     };
-    DashboardComponent.prototype.onMsgChoiceSubmit = function () {
+    DashboardComponent.prototype.setUserSelections = function () {
         var _this = this;
         // Create an object with all the choices
         var userSelections = {
@@ -253,11 +253,32 @@ var DashboardComponent = (function () {
                 }
             }
         }
+        return promiseArr;
+    };
+    // Resolve all the promises for the user's selections and send SMS
+    DashboardComponent.prototype.sendTextMessage = function (promiseArr) {
+        var _this = this;
         console.log('PROMISE ARR', promiseArr);
         Promise.all(promiseArr).then(function (results) {
             console.log('results ', results);
             var formattedURL = encodeURIComponent(results.join('\n \n'));
             _this.apiCallService.sendSMS('19734946092', formattedURL);
+        }).catch(function (err) {
+            console.log(err);
+        });
+    };
+    // Set the time when the message will be sent
+    DashboardComponent.prototype.setMsgTime = function () {
+        // Grab the user's input
+        // Convert it a time cron can use
+        // Set cron to send
+    };
+    DashboardComponent.prototype.onTestMsgSubmit = function () {
+        var _this = this;
+        var promArr = this.setUserSelections();
+        Promise.all(promArr).then(function (results) {
+            var formattedURL = encodeURIComponent(results.join('\n \n'));
+            _this.apiCallService.setTimedSMS('19734946092', formattedURL);
         }).catch(function (err) {
             console.log(err);
         });
@@ -276,6 +297,9 @@ var DashboardComponent = (function () {
         //     mediaUrl: 'https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg',
         //   })
         //   .then((message) => console.log(message.sid));
+    };
+    DashboardComponent.prototype.onMsgSelectionSubmit = function () {
+        // Set the time when the message will be sent
     };
     return DashboardComponent;
 }());
@@ -790,7 +814,10 @@ var APICallService = (function () {
     // Messaging API
     APICallService.prototype.sendSMS = function (phoneNum, text) {
         console.log('sms service called');
-        return this.http.get("/api/sendsms?phoneNum=" + phoneNum + "&text=" + text).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+        return this.http.get("/api/sendsms?phone_num=" + phoneNum + "&text=" + text).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+    };
+    APICallService.prototype.setTimedSMS = function (phoneNum, text) {
+        return this.http.get("/api/timedsms?phone_num=" + phoneNum + "&text=" + text).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     return APICallService;
 }());

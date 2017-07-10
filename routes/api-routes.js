@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var axios = require('axios');
 var stringify = require('json-stringify-safe');
-
+var CronJob = require('cron').CronJob;
 
 var api_keys = require('../config/api');
 
@@ -27,8 +27,9 @@ router.get('/news', (req, res) => {
     });
 });
 
+// SMS will be sent immediately
 router.get('/sendsms', (req, res) => {
-    var MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=${api_keys.nexmoAPIKey}&api_secret=${api_keys.nexmoAPISecret}&to=${req.query.phoneNum}&from=12035338496&text=${req.query.text}`;
+    var MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=${api_keys.nexmoAPIKey}&api_secret=${api_keys.nexmoAPISecret}&to=${req.query.phone_num}&from=12035338496&text=${req.query.text}`;
     console.log('nexmo: ', MESSAGING_API_URL);
     axios.get(MESSAGING_API_URL).then(function(response) {
        res.send(stringify(response.status, null, 2));
@@ -36,6 +37,33 @@ router.get('/sendsms', (req, res) => {
         console.log(rejection);
         return;
     }).catch(function (err) { console.log(err) });
+});
+
+// SMS will only be sent at the time the user specifies
+router.get('/timedsms', (req, res) => {
+    var job = new CronJob('00 24 19 * * 1-5', function() {
+            /*
+             * Runs every weekday (Monday through Friday)
+             * at 11:30:00 AM. It does not run on Saturday
+             * or Sunday.
+             */
+
+            var MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=${api_keys.nexmoAPIKey}&api_secret=${api_keys.nexmoAPISecret}&to=${req.query.phone_num}&from=12035338496&text=${req.query.text}`;
+            console.log('nexmo: ', MESSAGING_API_URL);
+            axios.get(MESSAGING_API_URL).then(function(response) {
+                res.send(stringify(response.status, null, 2));
+            }, function (rejection) {
+                console.log(rejection);
+                return;
+            }).catch(function (err) { console.log(err) });
+
+        }, function () {
+            /* This function is executed when the job stops */
+            console.log('message sent')
+        },
+        true, /* Start the job right now */
+        "America/New_York" /* Time zone of this job. */
+    );
 });
 
 module.exports = router;
