@@ -66,6 +66,11 @@ router.get('/profile', passport.authenticate('jwt', {session: false}), (req, res
   res.json({user: req.user});
 });
 
+// Get Settings
+router.get('/settings', (req, res) => {
+
+});
+
 // Add Message Topics
 router.post('/settings', (req, res) => {
   console.log(req.body);
@@ -77,12 +82,6 @@ router.post('/settings', (req, res) => {
         res.json(updatedUser);
     });
   });
-    // User.getUserByUsername(req.body.username, (err, user) => {
-    //   if (err) throw err;
-    //   console.log(user);
-    //     user.settings = req.body.selections;
-    //     res.json
-    // });
 });
 
 module.exports = router;

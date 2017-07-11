@@ -30,7 +30,7 @@ export class APICallService {
     return this.http.get(`/api/sendsms?phone_num=${phoneNum}&text=${text}`).map(res => res.json()).toPromise().then(data => data);
   }
 
-  setTimedSMS(phoneNum,text, timeStr, isActive) {
+  setTimedSMS(phoneNum, text, timeStr, isActive) {
     console.log(timeStr);
     return this.http.get(`/api/timedsms/?phone_num=${phoneNum}&text=${text}&time=${timeStr}&is_active=${isActive}`).map(res => res.json()).toPromise().then(data => data);
 

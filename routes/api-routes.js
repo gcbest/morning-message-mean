@@ -45,6 +45,7 @@ router.get('/timedsms', (req, res) => {
     var isActive = req.query.is_active;
 
     console.log(timeStr);
+    console.log('isActive: ', isActive);
     var job = new CronJob(timeStr + ' * * 1-5', function() {
             /*
              * Runs every weekday (Monday through Friday)

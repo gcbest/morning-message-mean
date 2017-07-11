@@ -14,6 +14,8 @@ export class DashboardComponent implements OnInit {
   hasNews: Boolean = false;
   hasPositivity: Boolean;
   msgTime: String;
+  isActive: String;
+  client: Object;
 
   constructor(
     private apiCallService: APICallService,
@@ -28,8 +30,8 @@ export class DashboardComponent implements OnInit {
     // User selections
     var user = {
       _id: localStorage.user.split('"')[3],
-      username: localStorage.user.split('"')[11],
-      selections: {}
+      selections: {},
+      isActive: this.isActive
     };
 
     // Create an object with all the selected choices for this user
@@ -80,6 +82,7 @@ export class DashboardComponent implements OnInit {
     this.settingsService.setTopics(user).subscribe(data => {
       if (data) {
         console.log(data);
+        this.client = data;
       }
     });
     return promiseArr;
@@ -104,9 +107,35 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  // Stop sending daily text messages to user
+  stopMsgs() {
+    console.log('before this.isActive');
+
+    this.isActive = 'false';
+    // Stop cron job
+    console.log('before setTimedSMS');
+    this.apiCallService.setTimedSMS("", "", "", this.isActive)
+      .catch( err => {
+      console.log(err);
+    });
+
+    console.log('before SetTopics');
+    // Update isActive status on user object in database
+    this.settingsService.setTopics(this.client).subscribe(data => {
+      if (data) {
+        console.log('after isActive updated to false', data);
+        this.client = data;
+      }
+    });
+  }
+
 
 
   onMsgSubmit() {
+    // Set isActive to true
+    this.isActive = 'true';
+    var isActive = this.isActive;
+
     // Grab the user's input
     var hour = parseInt(this.msgTime.slice(0, 2));
     var minunte = parseInt(this.msgTime.slice(3, 5));
@@ -120,11 +149,9 @@ export class DashboardComponent implements OnInit {
     if(hour<10) strHours = "0" + strHours;
     if(minunte<10) strMinutes = "0" + strMinutes;
 
+    // Set cron to send message at specific time daily
     var cronFormattedStr = '00 ' + strMinutes + ' ' + strHours;
     console.log(cronFormattedStr);
-
-    // Set cron to send
-    var isActive = 'false'; /////// this will come from the user obj in the database
 
     var promiseArr = this.setUserSelections();
     Promise.all(promiseArr).then((results) => {

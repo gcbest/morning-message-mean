@@ -177,7 +177,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n\n<form (submit)=\"onMsgSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Time to Send Message</label>\n    <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n  <input type=\"button\" (onClick)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n</form>\n"
+module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n\n<form (submit)=\"onMsgSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Time to Send Message</label>\n    <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n  <input type=\"button\" (onClick)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n  <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-alert\">\n</form>\n\n"
 
 /***/ }),
 
@@ -218,8 +218,8 @@ var DashboardComponent = (function () {
         // User selections
         var user = {
             _id: localStorage.user.split('"')[3],
-            username: localStorage.user.split('"')[11],
-            selections: {}
+            selections: {},
+            isActive: this.isActive
         };
         // Create an object with all the selected choices for this user
         var userSelections = {
@@ -266,6 +266,7 @@ var DashboardComponent = (function () {
         this.settingsService.setTopics(user).subscribe(function (data) {
             if (data) {
                 console.log(data);
+                _this.client = data;
             }
         });
         return promiseArr;
@@ -285,8 +286,31 @@ var DashboardComponent = (function () {
     // Set the time when the message will be sent
     DashboardComponent.prototype.setMsgTime = function () {
     };
+    // Stop sending daily text messages to user
+    DashboardComponent.prototype.stopMsgs = function () {
+        var _this = this;
+        console.log('before this.isActive');
+        this.isActive = 'false';
+        // Stop cron job
+        console.log('before setTimedSMS');
+        this.apiCallService.setTimedSMS("", "", "", this.isActive)
+            .catch(function (err) {
+            console.log(err);
+        });
+        console.log('before SetTopics');
+        // Update isActive status on user object in database
+        this.settingsService.setTopics(this.client).subscribe(function (data) {
+            if (data) {
+                console.log('after isActive updated to false', data);
+                _this.client = data;
+            }
+        });
+    };
     DashboardComponent.prototype.onMsgSubmit = function () {
         var _this = this;
+        // Set isActive to true
+        this.isActive = 'true';
+        var isActive = this.isActive;
         // Grab the user's input
         var hour = parseInt(this.msgTime.slice(0, 2));
         var minunte = parseInt(this.msgTime.slice(3, 5));
@@ -302,10 +326,9 @@ var DashboardComponent = (function () {
             strHours = "0" + strHours;
         if (minunte < 10)
             strMinutes = "0" + strMinutes;
+        // Set cron to send message at specific time daily
         var cronFormattedStr = '00 ' + strMinutes + ' ' + strHours;
         console.log(cronFormattedStr);
-        // Set cron to send
-        var isActive = 'false'; /////// this will come from the user obj in the database
         var promiseArr = this.setUserSelections();
         Promise.all(promiseArr).then(function (results) {
             var formattedURL = encodeURIComponent(results.join('\n \n'));
