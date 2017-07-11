@@ -1,7 +1,7 @@
 <h2 class="page-header">Welcome to your Dashboard</h2>
 <p>Welcome Friend!</p>
 
-<form (submit)="onTestMsgSubmit()">
+<form (submit)="onMsgSubmit()">
   <div class="form-group">
     <label>Weather</label>
     <input type="checkbox" [(ngModel)]="hasWeather" name="hasWeather" class="form-control">
@@ -15,5 +15,5 @@
     <input type="text" [(ngModel)]="msgTime" name="msgTime" class="form-control" placeholder="hh:mm am">
   </div>
   <input type="submit" value="Submit" class="btn btn-primary">
-  <input type="button" onClick="" value="Send a Test Message" class="btn btn-success">
+  <input type="button" (onClick)="setMsgTime()" value="Send a Test Message" class="btn btn-success">
 </form>

@@ -53,11 +53,9 @@ export class DashboardComponent implements OnInit {
                   for(var i = 0; i < 3; i++) {
                     headline += articlesArr[i].title + '\n' + articlesArr[i].url + '\n';
                   }
-                  debugger;
                   console.log('headline before enocoding', headline);
                   headline = encodeURIComponent(headline);
                   console.log('headline AFTER enocoding', headline);
-                  debugger;
                   resolve(headline);
                 });
               });
@@ -85,27 +83,39 @@ export class DashboardComponent implements OnInit {
 
   // Set the time when the message will be sent
   setMsgTime() {
-    // Grab the user's input
-
-    // Convert it a time cron can use
-
-    // Set cron to send
 
 
   }
 
 
 
-  onTestMsgSubmit() {
+  onMsgSubmit() {
+    // Grab the user's input
+    var hour = parseInt(this.msgTime.slice(0, 2));
+    var minunte = parseInt(this.msgTime.slice(3, 5));
+    var ampm = this.msgTime.slice(6, 8).toLowerCase();
 
-    var promArr = this.setUserSelections();
-    Promise.all(promArr).then((results) => {
+    // Convert it a time cron can use
+    if(ampm == "pm" && hour<12) hour = hour+12;
+    if(ampm == "am" && hour==12) hour = hour-12;
+    var strHours = hour.toString();
+    var strMinutes = minunte.toString();
+    if(hour<10) strHours = "0" + strHours;
+    if(minunte<10) strMinutes = "0" + strMinutes;
+
+    var cronFormattedStr = '00 ' + strMinutes + ' ' + strHours;
+    console.log(cronFormattedStr);
+
+    // Set cron to send
+    var isActive = 'false'; /////// this will come from the user obj in the database
+
+    var promiseArr = this.setUserSelections();
+    Promise.all(promiseArr).then((results) => {
       var formattedURL =  encodeURIComponent(results.join('\n \n'));
-      this.apiCallService.setTimedSMS('19734946092', formattedURL);
+      this.apiCallService.setTimedSMS('19734946092', formattedURL, cronFormattedStr, isActive);
     }).catch( err => {
       console.log(err);
     });
-
 
 
 

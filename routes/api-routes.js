@@ -41,7 +41,11 @@ router.get('/sendsms', (req, res) => {
 
 // SMS will only be sent at the time the user specifies
 router.get('/timedsms', (req, res) => {
-    var job = new CronJob('00 24 19 * * 1-5', function() {
+    var timeStr = decodeURIComponent(req.query.time);
+    var isActive = req.query.is_active;
+
+    console.log(timeStr);
+    var job = new CronJob(timeStr + ' * * 1-5', function() {
             /*
              * Runs every weekday (Monday through Friday)
              * at 11:30:00 AM. It does not run on Saturday
@@ -59,11 +63,17 @@ router.get('/timedsms', (req, res) => {
 
         }, function () {
             /* This function is executed when the job stops */
-            console.log('message sent')
+            console.log('JOB STOPPED');
         },
         true, /* Start the job right now */
         "America/New_York" /* Time zone of this job. */
     );
+
+    if (isActive === 'false') {
+        job.stop();
+    }
+
+
 });
 
 module.exports = router;

@@ -175,7 +175,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n\n<form (submit)=\"onTestMsgSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Time to Send Message</label>\n    <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n  <input type=\"button\" onClick=\"\" value=\"Send a Test Message\" class=\"btn btn-success\">\n</form>\n"
+module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n\n<form (submit)=\"onMsgSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Time to Send Message</label>\n    <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n  <input type=\"button\" (onClick)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n</form>\n"
 
 /***/ }),
 
@@ -239,11 +239,9 @@ var DashboardComponent = (function () {
                                     for (var i = 0; i < 3; i++) {
                                         headline += articlesArr[i].title + '\n' + articlesArr[i].url + '\n';
                                     }
-                                    debugger;
                                     console.log('headline before enocoding', headline);
                                     headline = encodeURIComponent(headline);
                                     console.log('headline AFTER enocoding', headline);
-                                    debugger;
                                     resolve(headline);
                                 });
                             });
@@ -269,16 +267,32 @@ var DashboardComponent = (function () {
     };
     // Set the time when the message will be sent
     DashboardComponent.prototype.setMsgTime = function () {
-        // Grab the user's input
-        // Convert it a time cron can use
-        // Set cron to send
     };
-    DashboardComponent.prototype.onTestMsgSubmit = function () {
+    DashboardComponent.prototype.onMsgSubmit = function () {
         var _this = this;
-        var promArr = this.setUserSelections();
-        Promise.all(promArr).then(function (results) {
+        // Grab the user's input
+        var hour = parseInt(this.msgTime.slice(0, 2));
+        var minunte = parseInt(this.msgTime.slice(3, 5));
+        var ampm = this.msgTime.slice(6, 8).toLowerCase();
+        // Convert it a time cron can use
+        if (ampm == "pm" && hour < 12)
+            hour = hour + 12;
+        if (ampm == "am" && hour == 12)
+            hour = hour - 12;
+        var strHours = hour.toString();
+        var strMinutes = minunte.toString();
+        if (hour < 10)
+            strHours = "0" + strHours;
+        if (minunte < 10)
+            strMinutes = "0" + strMinutes;
+        var cronFormattedStr = '00 ' + strMinutes + ' ' + strHours;
+        console.log(cronFormattedStr);
+        // Set cron to send
+        var isActive = 'false'; /////// this will come from the user obj in the database
+        var promiseArr = this.setUserSelections();
+        Promise.all(promiseArr).then(function (results) {
             var formattedURL = encodeURIComponent(results.join('\n \n'));
-            _this.apiCallService.setTimedSMS('19734946092', formattedURL);
+            _this.apiCallService.setTimedSMS('19734946092', formattedURL, cronFormattedStr, isActive);
         }).catch(function (err) {
             console.log(err);
         });
@@ -816,8 +830,9 @@ var APICallService = (function () {
         console.log('sms service called');
         return this.http.get("/api/sendsms?phone_num=" + phoneNum + "&text=" + text).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
-    APICallService.prototype.setTimedSMS = function (phoneNum, text) {
-        return this.http.get("/api/timedsms?phone_num=" + phoneNum + "&text=" + text).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+    APICallService.prototype.setTimedSMS = function (phoneNum, text, timeStr, isActive) {
+        console.log(timeStr);
+        return this.http.get("/api/timedsms/?phone_num=" + phoneNum + "&text=" + text + "&time=" + timeStr + "&is_active=" + isActive).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     return APICallService;
 }());
