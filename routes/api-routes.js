@@ -71,6 +71,7 @@ router.get('/timedsms', (req, res) => {
 
     if (isActive === 'false') {
         job.stop();
+        return;
     }
 
 

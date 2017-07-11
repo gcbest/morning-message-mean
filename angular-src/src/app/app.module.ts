@@ -17,6 +17,7 @@ import { AuthService } from './services/auth.service';
 import { FlashMessagesModule } from 'angular2-flash-messages';
 import {AuthGuard} from './guards/auth.guard';
 import {APICallService} from './services/apiCall.service';
+import {SettingsService} from './services/settings.service';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, pathMatch: 'full'},
@@ -43,7 +44,7 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     FlashMessagesModule,
   ],
-  providers: [ValidateService, AuthService, AuthGuard, APICallService],
+  providers: [ValidateService, AuthService, AuthGuard, APICallService, SettingsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import 'rxjs/add/operator/map';
 
 import {APICallService} from '../../services/apiCall.service';
-import 'rxjs/add/operator/map';
+import {SettingsService} from '../../services/settings.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,15 +15,24 @@ export class DashboardComponent implements OnInit {
   hasPositivity: Boolean;
   msgTime: String;
 
-  constructor(private apiCallService: APICallService) { }
+  constructor(
+    private apiCallService: APICallService,
+    private settingsService: SettingsService
+  ) { }
 
   ngOnInit() {
   }
 
 
-
   setUserSelections() {
-    // Create an object with all the choices
+    // User selections
+    var user = {
+      _id: localStorage.user.split('"')[3],
+      username: localStorage.user.split('"')[11],
+      selections: {}
+    };
+
+    // Create an object with all the selected choices for this user
     var userSelections = {
       hasWeather: this.hasWeather,
       hasNews: this.hasNews
@@ -65,6 +75,13 @@ export class DashboardComponent implements OnInit {
         }
       }
     }
+
+    user.selections = userSelections;
+    this.settingsService.setTopics(user).subscribe(data => {
+      if (data) {
+        console.log(data);
+      }
+    });
     return promiseArr;
   }
 
