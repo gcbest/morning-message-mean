@@ -20,8 +20,8 @@ export class APICallService {
   }
 
   // Directions API
-  getDirections(homeAddress, workAddress) {
-    return this.http.get(`https://maps.googleapis.com/maps/api/directions/json?origin=Disneyland&destination=Universal+Studios+Hollywood4&key=YOUR_API_KEY`)
+  getTravel(homeAddress, workAddress) {
+    // return this.http.get(`/api/travel?origin=${homeAddress}&destination=${workAddress}`).map(res => res.json()).toPromise().then(data => data);
   }
 
   // Messaging API
@@ -30,8 +30,8 @@ export class APICallService {
     return this.http.get(`/api/sendsms?phone_num=${phoneNum}&text=${text}`).map(res => res.json()).toPromise().then(data => data);
   }
 
-  setTimedSMS(phoneNum, text, timeObj, isActive, id) {
-    return this.http.get(`/api/timedsms/?phone_num=${phoneNum}&text=${text}&min=${timeObj.min}&hour=${timeObj.hour}&is_active=${isActive}&_id=${id}`).map(res => res.json()).toPromise().then(data => data);
+  setTimedSMS(phoneNum, text, timeObj, id) {
+    return this.http.get(`/api/timedsms/?phone_num=${phoneNum}&text=${text}&min=${timeObj.min}&hour=${timeObj.hour}&_id=${id}`).map(res => res.json()).toPromise().then(data => data);
   }
 
   cancelMsgs(_id) {

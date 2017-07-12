@@ -69,6 +69,7 @@ router.get('/profile', passport.authenticate('jwt', {session: false}), (req, res
 // Get Settings
 router.get('/settings', (req, res) => {
   User.getUserById(req.query._id, (err, user) => {
+    console.log('GET /SETTINGS user', user);
       res.json({user: user});
   });
 });
@@ -77,12 +78,14 @@ router.get('/settings', (req, res) => {
 router.post('/settings', (req, res) => {
   console.log(req.body);
   User.getUserById(req.body._id, (err, user) => {
-    console.log(user);
-    user.settings = req.body.selections;
-    user.save((err, updatedUser) => {
-      if (err) console.log(err);
-        res.json(updatedUser);
-    });
+    console.log('POST /SETTINGS user', user);
+    if (user.settings) {
+        user.settings = req.body.selections;
+        user.save((err, updatedUser) => {
+            if (err) console.log(err);
+            res.json(updatedUser);
+        });
+    }
   });
 });
 

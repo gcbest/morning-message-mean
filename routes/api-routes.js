@@ -31,15 +31,15 @@ router.get('/news', (req, res) => {
     });
 });
 
-router.get('/travel-time', (req, res) => {
-    const origin = "";
-    const destination = "";
-    const MAPS_API_URL = `https://maps.googleapis.com/maps/api/directions/json?origin=Disneyland&destination=${destination}&key=${api_keys.mapsAPIKey}`;
-
-    axios.get(MAPS_API_URL).then(function(response) {
-        res.json(response);
-    });
-});
+// router.get('/travel', (req, res) => {
+//     const origin = "";
+//     const destination = "";
+//     const MAPS_API_URL = `https://maps.googleapis.com/maps/api/directions/json?origin=Disneyland&destination=${destination}&key=${api_keys.mapsAPIKey}`;
+//
+//     axios.get(MAPS_API_URL).then(function(response) {
+//         res.json(response);
+//     });
+// });
 
 // SMS will be sent immediately
 router.get('/sendsms', (req, res) => {
@@ -56,9 +56,7 @@ router.get('/sendsms', (req, res) => {
 // SMS will only be sent at the time the user specifies
 router.get('/timedsms', (req, res) => {
     var timeStr = decodeURIComponent(req.query.time);
-    var isActive = req.query.is_active;
     console.log(timeStr);
-    console.log('isActive:', isActive);
 
     var rule = new schedule.RecurrenceRule();
     rule.dayOfWeek = [new schedule.Range(1, 5)];
@@ -85,34 +83,33 @@ router.get('/timedsms', (req, res) => {
     User.getUserById(req.query._id, (err, user) => {
         console.log(user);
         user.jobName = unique_job_name;
+        user.settings.isActive = true;
         user.save((err, updatedUser) => {
             if (err) console.log(err);
             res.json(updatedUser);
-            console.log('updatedUser', updatedUser);
+            console.log('updatedUser GET /TIMEDSMS', updatedUser);
         });
     });
-
-    if (isActive === 'false') {
-        j.cancel();
-        return;
-    }
-
-
 });
 
 router.post('/cancelsms', (req, res) => {
     console.log('req.body', req.body);
     User.getUserById(req.body._id, (err, user) => {
-        console.log('user.jobs', user.jobName);
-        var job = schedule.scheduledJobs[user.jobName];
-        job.cancel();
-        user.jobName = "";
-        user.save((err, updatedUser) => {
-            if (err) console.log(err);
-            res.json(updatedUser);
-            console.log('updatedUser', updatedUser);
-            return;
-        });
+        console.log('user.jobName', user.jobName);
+        if (user.jobName) {
+            var job = schedule.scheduledJobs[user.jobName];
+            job.cancel();
+            user.jobName = "";
+            user.settings.isActive = false;
+            user.save((err, updatedUser) => {
+                if (err) console.log(err);
+                res.json(updatedUser);
+                console.log('updatedUser POST /CANCELSMS', updatedUser);
+                return;
+            });
+        } else {
+           res.json('no job to cancel');
+        }
     });
 });
 

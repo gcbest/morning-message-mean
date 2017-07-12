@@ -14,8 +14,9 @@ export class DashboardComponent implements OnInit {
   hasWeather: Boolean = false;
   hasNews: Boolean = false;
   hasPositivity: Boolean;
+  // hasTravel: Boolean = false;
   msgTime: String;
-  isActive: String;
+  isActive: Boolean = false;
   _id: String = localStorage.user.split('"')[3];
 
   constructor(
@@ -27,7 +28,7 @@ export class DashboardComponent implements OnInit {
     this.settingsService.getSettings(this._id).subscribe(data => {
       this.client = data;
       console.log('data', data);
-      if (data) {
+      if (data.user.settings) {
         this.hasWeather = data.user.settings.hasWeather;
         this.hasNews = data.user.settings.hasNews;
       }
@@ -76,13 +77,26 @@ export class DashboardComponent implements OnInit {
                   }
                   console.log('headline before enocoding', headline);
                   headline = encodeURIComponent(headline);
-                  console.log('headline AFTER enocoding', headline);
+                  console.log('headline AFTER encoding', headline);
                   resolve(headline);
                 });
               });
               promiseArr.push(newsPromise);
             }
             break;
+          // case 'hasTravel':
+          //   if (userSelections[property] === true) {
+          //     var travelPromise = new Promise((resolve, reject) => {
+          //       this.apiCallService.getTravel('71 Quitman St Newark, NJ', '1225 Raymond Blvd Newark, NJ').then(travel_time => {
+          //         console.log('travel_time before encoding', travel_time);
+          //         travel_time = encodeURIComponent(travel_time);
+          //         console.log('travel_time AFTER encoding', travel_time);
+          //         resolve(travel_time);
+          //       });
+          //     });
+          //     promiseArr.push(travelPromise);
+          //   }
+          //   break;
         }
       }
     }
@@ -120,7 +134,6 @@ export class DashboardComponent implements OnInit {
   stopMsgs() {
     console.log('before this.isActive');
 
-    this.isActive = 'false';
     // Stop cron job
     this.apiCallService.cancelMsgs(this._id).subscribe(data => {
       if (data) {
@@ -129,21 +142,17 @@ export class DashboardComponent implements OnInit {
     });
 
     // Update isActive status on user object in database
-    this.settingsService.setTopics(this.client).subscribe(data => {
-      if (data) {
-        console.log('after isActive updated to false', data);
-        this.client = data;
-      }
-    });
+    // this.settingsService.setTopics(this.client).subscribe(data => {
+    //   if (data) {
+    //     console.log('after isActive updated to false', data);
+    //     this.client = data;
+    //   }
+    // });
   }
 
 
 
   onMsgSubmit() {
-    // Set isActive to true
-    this.isActive = 'true';
-    var isActive = this.isActive;
-
     // Grab the user's input
     var hour = parseInt(this.msgTime.slice(0, 2));
     var minute = parseInt(this.msgTime.slice(3, 5));
@@ -152,13 +161,7 @@ export class DashboardComponent implements OnInit {
     // Convert it a time cron can use
     if(ampm == "pm" && hour<12) hour = hour+12;
     if(ampm == "am" && hour==12) hour = hour-12;
-    var strHours = hour.toString();
-    var strMinutes = minute.toString();
-    if(hour<10) strHours = "0" + strHours;
-    if(minute<10) strMinutes = "0" + strMinutes;
 
-    // Set cron to send message at specific time daily
-    // var cronFormattedStr = '00 ' + strMinutes + ' ' + strHours;
     var timeObj = {
       hour: hour,
       min: minute
@@ -168,7 +171,7 @@ export class DashboardComponent implements OnInit {
     Promise.all(promiseArr).then((results) => {
       var formattedURL =  encodeURIComponent(results.join('\n \n'));
 
-      this.apiCallService.setTimedSMS('19734946092', formattedURL, timeObj, isActive, this._id);
+      this.apiCallService.setTimedSMS('19734946092', formattedURL, timeObj, this._id);
     }).catch( err => {
       console.log(err);
     });

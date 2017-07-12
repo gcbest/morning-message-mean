@@ -177,7 +177,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n\n<form (submit)=\"onMsgSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Time to Send Message</label>\n    <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n  <input type=\"button\" (click)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n  <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-alert\">\n</form>\n\n"
+module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n\n<form (submit)=\"onMsgSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Travel Time</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasTravel\" name=\"hasTravel\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Time to Send Message</label>\n    <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n  <input type=\"button\" (click)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n  <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-alert\">\n</form>\n\n"
 
 /***/ }),
 
@@ -210,6 +210,7 @@ var DashboardComponent = (function () {
         this.settingsService = settingsService;
         this.hasWeather = false;
         this.hasNews = false;
+        this.isActive = false;
         this._id = localStorage.user.split('"')[3];
     }
     DashboardComponent.prototype.ngOnInit = function () {
@@ -217,7 +218,7 @@ var DashboardComponent = (function () {
         this.settingsService.getSettings(this._id).subscribe(function (data) {
             _this.client = data;
             console.log('data', data);
-            if (data) {
+            if (data.user.settings) {
                 _this.hasWeather = data.user.settings.hasWeather;
                 _this.hasNews = data.user.settings.hasNews;
             }
@@ -262,7 +263,7 @@ var DashboardComponent = (function () {
                                     }
                                     console.log('headline before enocoding', headline);
                                     headline = encodeURIComponent(headline);
-                                    console.log('headline AFTER enocoding', headline);
+                                    console.log('headline AFTER encoding', headline);
                                     resolve(headline);
                                 });
                             });
@@ -298,9 +299,7 @@ var DashboardComponent = (function () {
     };
     // Stop sending daily text messages to user
     DashboardComponent.prototype.stopMsgs = function () {
-        var _this = this;
         console.log('before this.isActive');
-        this.isActive = 'false';
         // Stop cron job
         this.apiCallService.cancelMsgs(this._id).subscribe(function (data) {
             if (data) {
@@ -308,18 +307,15 @@ var DashboardComponent = (function () {
             }
         });
         // Update isActive status on user object in database
-        this.settingsService.setTopics(this.client).subscribe(function (data) {
-            if (data) {
-                console.log('after isActive updated to false', data);
-                _this.client = data;
-            }
-        });
+        // this.settingsService.setTopics(this.client).subscribe(data => {
+        //   if (data) {
+        //     console.log('after isActive updated to false', data);
+        //     this.client = data;
+        //   }
+        // });
     };
     DashboardComponent.prototype.onMsgSubmit = function () {
         var _this = this;
-        // Set isActive to true
-        this.isActive = 'true';
-        var isActive = this.isActive;
         // Grab the user's input
         var hour = parseInt(this.msgTime.slice(0, 2));
         var minute = parseInt(this.msgTime.slice(3, 5));
@@ -329,14 +325,6 @@ var DashboardComponent = (function () {
             hour = hour + 12;
         if (ampm == "am" && hour == 12)
             hour = hour - 12;
-        var strHours = hour.toString();
-        var strMinutes = minute.toString();
-        if (hour < 10)
-            strHours = "0" + strHours;
-        if (minute < 10)
-            strMinutes = "0" + strMinutes;
-        // Set cron to send message at specific time daily
-        // var cronFormattedStr = '00 ' + strMinutes + ' ' + strHours;
         var timeObj = {
             hour: hour,
             min: minute
@@ -344,7 +332,7 @@ var DashboardComponent = (function () {
         var promiseArr = this.setUserSelections();
         Promise.all(promiseArr).then(function (results) {
             var formattedURL = encodeURIComponent(results.join('\n \n'));
-            _this.apiCallService.setTimedSMS('19734946092', formattedURL, timeObj, isActive, _this._id);
+            _this.apiCallService.setTimedSMS('19734946092', formattedURL, timeObj, _this._id);
         }).catch(function (err) {
             console.log(err);
         });
@@ -875,16 +863,16 @@ var APICallService = (function () {
         return this.http.get("/api/news?source=" + source).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     // Directions API
-    APICallService.prototype.getDirections = function (homeAddress, workAddress) {
-        return this.http.get("https://maps.googleapis.com/maps/api/directions/json?origin=Disneyland&destination=Universal+Studios+Hollywood4&key=YOUR_API_KEY");
+    APICallService.prototype.getTravel = function (homeAddress, workAddress) {
+        // return this.http.get(`/api/travel?origin=${homeAddress}&destination=${workAddress}`).map(res => res.json()).toPromise().then(data => data);
     };
     // Messaging API
     APICallService.prototype.sendSMS = function (phoneNum, text) {
         console.log('sms service called');
         return this.http.get("/api/sendsms?phone_num=" + phoneNum + "&text=" + text).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
-    APICallService.prototype.setTimedSMS = function (phoneNum, text, timeObj, isActive, id) {
-        return this.http.get("/api/timedsms/?phone_num=" + phoneNum + "&text=" + text + "&min=" + timeObj.min + "&hour=" + timeObj.hour + "&is_active=" + isActive + "&_id=" + id).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+    APICallService.prototype.setTimedSMS = function (phoneNum, text, timeObj, id) {
+        return this.http.get("/api/timedsms/?phone_num=" + phoneNum + "&text=" + text + "&min=" + timeObj.min + "&hour=" + timeObj.hour + "&_id=" + id).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     APICallService.prototype.cancelMsgs = function (_id) {
         return this.http.post('/api/cancelsms', { _id: _id }).map(function (res) { return res.json(); });
