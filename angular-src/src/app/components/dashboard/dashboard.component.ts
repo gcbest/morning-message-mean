@@ -146,26 +146,29 @@ export class DashboardComponent implements OnInit {
 
     // Grab the user's input
     var hour = parseInt(this.msgTime.slice(0, 2));
-    var minunte = parseInt(this.msgTime.slice(3, 5));
+    var minute = parseInt(this.msgTime.slice(3, 5));
     var ampm = this.msgTime.slice(6, 8).toLowerCase();
 
     // Convert it a time cron can use
     if(ampm == "pm" && hour<12) hour = hour+12;
     if(ampm == "am" && hour==12) hour = hour-12;
     var strHours = hour.toString();
-    var strMinutes = minunte.toString();
+    var strMinutes = minute.toString();
     if(hour<10) strHours = "0" + strHours;
-    if(minunte<10) strMinutes = "0" + strMinutes;
+    if(minute<10) strMinutes = "0" + strMinutes;
 
     // Set cron to send message at specific time daily
-    var cronFormattedStr = '00 ' + strMinutes + ' ' + strHours;
-    console.log(cronFormattedStr);
+    // var cronFormattedStr = '00 ' + strMinutes + ' ' + strHours;
+    var timeObj = {
+      hour: hour,
+      min: minute
+    };
 
     var promiseArr = this.setUserSelections();
     Promise.all(promiseArr).then((results) => {
       var formattedURL =  encodeURIComponent(results.join('\n \n'));
 
-      this.apiCallService.setTimedSMS('19734946092', formattedURL, cronFormattedStr, isActive, this._id);
+      this.apiCallService.setTimedSMS('19734946092', formattedURL, timeObj, isActive, this._id);
     }).catch( err => {
       console.log(err);
     });

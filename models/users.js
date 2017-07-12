@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-require('mongoose-function')(mongoose);
 const bcrypt = require('bcryptjs');
 const config = require('../config/database');
 

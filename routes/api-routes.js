@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const stringify = require('json-stringify-safe');
-const CronJob = require('cron').CronJob;
 const User = require('../models/users');
 
 const schedule = require('node-schedule');
@@ -32,6 +31,16 @@ router.get('/news', (req, res) => {
     });
 });
 
+router.get('/travel-time', (req, res) => {
+    const origin = "";
+    const destination = "";
+    const MAPS_API_URL = `https://maps.googleapis.com/maps/api/directions/json?origin=Disneyland&destination=${destination}&key=${api_keys.mapsAPIKey}`;
+
+    axios.get(MAPS_API_URL).then(function(response) {
+        res.json(response);
+    });
+});
+
 // SMS will be sent immediately
 router.get('/sendsms', (req, res) => {
     var MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=${api_keys.nexmoAPIKey}&api_secret=${api_keys.nexmoAPISecret}&to=${req.query.phone_num}&from=12035338496&text=${req.query.text}`;
@@ -52,7 +61,11 @@ router.get('/timedsms', (req, res) => {
     console.log('isActive:', isActive);
 
     var rule = new schedule.RecurrenceRule();
-    rule.minute = 25;
+    rule.dayOfWeek = [new schedule.Range(1, 5)];
+    rule.minute = parseInt(req.query.min);
+    rule.hour = parseInt(req.query.hour);
+
+    console.log('rule', rule);
 
     var unique_job_name = req.query.phone_number + req.query._id;
 

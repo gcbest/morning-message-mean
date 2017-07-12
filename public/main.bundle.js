@@ -322,7 +322,7 @@ var DashboardComponent = (function () {
         var isActive = this.isActive;
         // Grab the user's input
         var hour = parseInt(this.msgTime.slice(0, 2));
-        var minunte = parseInt(this.msgTime.slice(3, 5));
+        var minute = parseInt(this.msgTime.slice(3, 5));
         var ampm = this.msgTime.slice(6, 8).toLowerCase();
         // Convert it a time cron can use
         if (ampm == "pm" && hour < 12)
@@ -330,18 +330,21 @@ var DashboardComponent = (function () {
         if (ampm == "am" && hour == 12)
             hour = hour - 12;
         var strHours = hour.toString();
-        var strMinutes = minunte.toString();
+        var strMinutes = minute.toString();
         if (hour < 10)
             strHours = "0" + strHours;
-        if (minunte < 10)
+        if (minute < 10)
             strMinutes = "0" + strMinutes;
         // Set cron to send message at specific time daily
-        var cronFormattedStr = '00 ' + strMinutes + ' ' + strHours;
-        console.log(cronFormattedStr);
+        // var cronFormattedStr = '00 ' + strMinutes + ' ' + strHours;
+        var timeObj = {
+            hour: hour,
+            min: minute
+        };
         var promiseArr = this.setUserSelections();
         Promise.all(promiseArr).then(function (results) {
             var formattedURL = encodeURIComponent(results.join('\n \n'));
-            _this.apiCallService.setTimedSMS('19734946092', formattedURL, cronFormattedStr, isActive, _this._id);
+            _this.apiCallService.setTimedSMS('19734946092', formattedURL, timeObj, isActive, _this._id);
         }).catch(function (err) {
             console.log(err);
         });
@@ -873,15 +876,15 @@ var APICallService = (function () {
     };
     // Directions API
     APICallService.prototype.getDirections = function (homeAddress, workAddress) {
+        return this.http.get("https://maps.googleapis.com/maps/api/directions/json?origin=Disneyland&destination=Universal+Studios+Hollywood4&key=YOUR_API_KEY");
     };
     // Messaging API
     APICallService.prototype.sendSMS = function (phoneNum, text) {
         console.log('sms service called');
         return this.http.get("/api/sendsms?phone_num=" + phoneNum + "&text=" + text).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
-    APICallService.prototype.setTimedSMS = function (phoneNum, text, timeStr, isActive, id) {
-        console.log(timeStr);
-        return this.http.get("/api/timedsms/?phone_num=" + phoneNum + "&text=" + text + "&time=" + timeStr + "&is_active=" + isActive + "&_id=" + id).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+    APICallService.prototype.setTimedSMS = function (phoneNum, text, timeObj, isActive, id) {
+        return this.http.get("/api/timedsms/?phone_num=" + phoneNum + "&text=" + text + "&min=" + timeObj.min + "&hour=" + timeObj.hour + "&is_active=" + isActive + "&_id=" + id).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     APICallService.prototype.cancelMsgs = function (_id) {
         return this.http.post('/api/cancelsms', { _id: _id }).map(function (res) { return res.json(); });
