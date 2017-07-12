@@ -14,7 +14,7 @@ export class DashboardComponent implements OnInit {
   hasWeather: Boolean = false;
   hasNews: Boolean = false;
   hasPositivity: Boolean;
-  // hasTravel: Boolean = false;
+  hasTravel: Boolean = false;
   msgTime: String;
   isActive: Boolean = false;
   _id: String = localStorage.user.split('"')[3];
@@ -31,6 +31,7 @@ export class DashboardComponent implements OnInit {
       if (data.user.settings) {
         this.hasWeather = data.user.settings.hasWeather;
         this.hasNews = data.user.settings.hasNews;
+        this.hasTravel =data.user.settings.hasTravel;
       }
     });
   }
@@ -47,7 +48,8 @@ export class DashboardComponent implements OnInit {
     // Create an object with all the selected choices for this user
     var userSelections = {
       hasWeather: this.hasWeather,
-      hasNews: this.hasNews
+      hasNews: this.hasNews,
+      hasTravel: this.hasTravel
     };
 
     // Add promises to promise array
@@ -84,19 +86,19 @@ export class DashboardComponent implements OnInit {
               promiseArr.push(newsPromise);
             }
             break;
-          // case 'hasTravel':
-          //   if (userSelections[property] === true) {
-          //     var travelPromise = new Promise((resolve, reject) => {
-          //       this.apiCallService.getTravel('71 Quitman St Newark, NJ', '1225 Raymond Blvd Newark, NJ').then(travel_time => {
-          //         console.log('travel_time before encoding', travel_time);
-          //         travel_time = encodeURIComponent(travel_time);
-          //         console.log('travel_time AFTER encoding', travel_time);
-          //         resolve(travel_time);
-          //       });
-          //     });
-          //     promiseArr.push(travelPromise);
-          //   }
-          //   break;
+          case 'hasTravel':
+            if (userSelections[property] === true) {
+              var travelPromise = new Promise((resolve, reject) => {
+                this.apiCallService.getTravel('71 Quitman St Newark, NJ', '1225 Raymond Blvd Newark, NJ').then(travel_time => {
+                  console.log('TRAVEL_TIME before encoding', travel_time);
+                  travel_time = encodeURIComponent(travel_time);
+                  console.log('travel_time AFTER encoding', travel_time);
+                  resolve(travel_time);
+                });
+              });
+              promiseArr.push(travelPromise);
+            }
+            break;
         }
       }
     }

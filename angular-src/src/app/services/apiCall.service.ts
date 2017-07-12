@@ -21,12 +21,11 @@ export class APICallService {
 
   // Directions API
   getTravel(homeAddress, workAddress) {
-    // return this.http.get(`/api/travel?origin=${homeAddress}&destination=${workAddress}`).map(res => res.json()).toPromise().then(data => data);
+    return this.http.get(`/api/travel?homeaddress=${homeAddress}&destination=${workAddress}`).map(res => res.json()).toPromise().then(data => data);
   }
 
   // Messaging API
   sendSMS(phoneNum, text) {
-    console.log('sms service called');
     return this.http.get(`/api/sendsms?phone_num=${phoneNum}&text=${text}`).map(res => res.json()).toPromise().then(data => data);
   }
 

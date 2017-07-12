@@ -210,6 +210,7 @@ var DashboardComponent = (function () {
         this.settingsService = settingsService;
         this.hasWeather = false;
         this.hasNews = false;
+        this.hasTravel = false;
         this.isActive = false;
         this._id = localStorage.user.split('"')[3];
     }
@@ -221,6 +222,7 @@ var DashboardComponent = (function () {
             if (data.user.settings) {
                 _this.hasWeather = data.user.settings.hasWeather;
                 _this.hasNews = data.user.settings.hasNews;
+                _this.hasTravel = data.user.settings.hasTravel;
             }
         });
     };
@@ -235,7 +237,8 @@ var DashboardComponent = (function () {
         // Create an object with all the selected choices for this user
         var userSelections = {
             hasWeather: this.hasWeather,
-            hasNews: this.hasNews
+            hasNews: this.hasNews,
+            hasTravel: this.hasTravel
         };
         // Add promises to promise array
         var promiseArr = [];
@@ -268,6 +271,19 @@ var DashboardComponent = (function () {
                                 });
                             });
                             promiseArr.push(newsPromise);
+                        }
+                        break;
+                    case 'hasTravel':
+                        if (userSelections[property] === true) {
+                            var travelPromise = new Promise(function (resolve, reject) {
+                                _this.apiCallService.getTravel('71 Quitman St Newark, NJ', '1225 Raymond Blvd Newark, NJ').then(function (travel_time) {
+                                    console.log('TRAVEL_TIME before encoding', travel_time);
+                                    travel_time = encodeURIComponent(travel_time);
+                                    console.log('travel_time AFTER encoding', travel_time);
+                                    resolve(travel_time);
+                                });
+                            });
+                            promiseArr.push(travelPromise);
                         }
                         break;
                 }
@@ -864,11 +880,10 @@ var APICallService = (function () {
     };
     // Directions API
     APICallService.prototype.getTravel = function (homeAddress, workAddress) {
-        // return this.http.get(`/api/travel?origin=${homeAddress}&destination=${workAddress}`).map(res => res.json()).toPromise().then(data => data);
+        return this.http.get("/api/travel?homeaddress=" + homeAddress + "&destination=" + workAddress).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     // Messaging API
     APICallService.prototype.sendSMS = function (phoneNum, text) {
-        console.log('sms service called');
         return this.http.get("/api/sendsms?phone_num=" + phoneNum + "&text=" + text).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     APICallService.prototype.setTimedSMS = function (phoneNum, text, timeObj, id) {
