@@ -18,7 +18,8 @@ router.get('/weather', (req, res) => {
     var requestURL = `${OPEN_WEATHER_MAP_URL}&q=${encodedLocation}`;
 
     axios.get(requestURL).then(function(response) {
-        res.json(response.data.main.temp);
+        console.log('GET /WEATHER response', response.data);
+        res.json(response.data);
     });
 });
 
@@ -37,7 +38,7 @@ router.get('/travel', (req, res) => {
     const MAPS_API_URL = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${api_keys.mapsAPIKey}`;
 
     axios.get(MAPS_API_URL).then(function(response) {
-        console.log('GET /TRAVEL response', response.data.routes[0].legs[0].duration.text);
+        console.log('GET /TRAVEL response', response.data.routes[0]);
         res.json(response.data.routes[0].legs[0].duration.text);
     });
 });

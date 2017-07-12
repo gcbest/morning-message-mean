@@ -1,15 +1,33 @@
 <h2 class="page-header">Welcome to your Dashboard</h2>
 <p>Welcome Friend!</p>
-
 <form (submit)="onMsgSubmit()">
   <div class="form-group">
     <label>Weather</label>
     <input type="checkbox" [(ngModel)]="hasWeather" name="hasWeather" class="form-control">
+    <input type="text" [(ngModel)]="zipCode" name="zipCode" class="form-control">
   </div>
   <div class="form-group">
     <label>News</label>
     <input type="checkbox" [(ngModel)]="hasNews" name="hasNews" class="form-control">
   </div>
+    <!-- Single button -->
+    <!--<div class="btn-group" dropdown>-->
+      <!--<button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">-->
+        <!--News Sources <span class="caret"></span>-->
+      <!--</button>-->
+      <!--<ul *dropdownMenu class="dropdown-menu" role="menu"-->
+          <!--[(ngModel)]="selectedSource" (ngModelChange)="onChange($event)">-->
+        <!--<li role="menuitem"><a class="dropdown-item" href="#">CNN</a></li>-->
+        <!--<li role="menuitem"><a class="dropdown-item" href="#">Google News</a></li>-->
+        <!--<li role="menuitem"><a class="dropdown-item" href="#">The New York Times</a></li>-->
+        <!--</li>-->
+      <!--</ul>-->
+    <!--</div>-->
+  <select [(ngModel)]="newsSource" name="newsSource" (ngModelChange)="onNewsChange($event)">
+    <option>CNN</option>
+    <option>Google News</option>
+    <option>The New York Times</option>
+  </select>
   <div class="form-group">
     <label>Travel Time</label>
     <input type="checkbox" [(ngModel)]="hasTravel" name="hasTravel" class="form-control">
@@ -20,6 +38,6 @@
   </div>
   <input type="submit" value="Submit" class="btn btn-primary">
   <input type="button" (click)="setMsgTime()" value="Send a Test Message" class="btn btn-success">
-  <input type="button" (click)="stopMsgs()" value="Cancel Messages" class="btn btn-alert">
+  <input type="button" (click)="stopMsgs()" value="Cancel Messages" class="btn btn-danger">
 </form>
 

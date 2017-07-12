@@ -11,12 +11,17 @@ import {SettingsService} from '../../services/settings.service';
 })
 export class DashboardComponent implements OnInit {
   client: Object;
+
   hasWeather: Boolean = false;
   hasNews: Boolean = false;
   hasPositivity: Boolean;
   hasTravel: Boolean = false;
-  msgTime: String;
   isActive: Boolean = false;
+
+  newsSource = 'CNN';
+  zipCode: String;
+  msgTime: String;
+  // User's mongodb id
   _id: String = localStorage.user.split('"')[3];
 
   constructor(
@@ -36,6 +41,9 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  onNewsChange(source) {
+    this.newsSource = source;
+  }
 
   setUserSelections() {
     // User selections
@@ -62,8 +70,11 @@ export class DashboardComponent implements OnInit {
           case 'hasWeather':
             if (userSelections[property] === true) {
               var weatherPromise = new Promise((resolve, reject) => {
-                this.apiCallService.getWeather('07103').then(temp => {
-                  resolve("Today's Temperature: " + temp + ' Degrees F');
+                this.apiCallService.getWeather(this.zipCode).then(data => {
+                  console.log('temp', data);
+                  var temperature = data.main.temp;
+                  var forecast = data.weather[0].main + ', ' + data.weather[0].description;
+                  resolve("Today's Temperature: " + temperature + ' Degrees F \n' + forecast);
                 });
               });
               promiseArr.push(weatherPromise);
@@ -72,7 +83,17 @@ export class DashboardComponent implements OnInit {
           case 'hasNews':
             if (userSelections[property] === true) {
               var newsPromise = new Promise((resolve, reject) => {
-                this.apiCallService.getNews('cnn').then(articlesArr => {
+                // Object to map news source names to their API valid keys
+                var newsObj = {
+                  "The New York Times": "the-new-york-times",
+                  "CNN": "cnn",
+                  "Google News": "google-news"
+                };
+
+                var sourceAPI = newsObj[this.newsSource];
+                console.log('sourceAPI', sourceAPI);
+
+                this.apiCallService.getNews(sourceAPI).then(articlesArr => {
                   var headline = "";
                   for(var i = 0; i < 3; i++) {
                     headline += articlesArr[i].title + '\n' + articlesArr[i].url + '\n';

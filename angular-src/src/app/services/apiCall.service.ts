@@ -15,7 +15,6 @@ export class APICallService {
 
   // News API
   getNews(source) {
-    source = 'cnn';
     return this.http.get(`/api/news?source=${source}`).map(res => res.json()).toPromise().then(data => data);
   }
 
