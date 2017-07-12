@@ -213,6 +213,15 @@ var DashboardComponent = (function () {
         this._id = localStorage.user.split('"')[3];
     }
     DashboardComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.settingsService.getSettings(this._id).subscribe(function (data) {
+            _this.client = data;
+            console.log('data', data);
+            if (data) {
+                _this.hasWeather = data.user.settings.hasWeather;
+                _this.hasNews = data.user.settings.hasNews;
+            }
+        });
     };
     DashboardComponent.prototype.setUserSelections = function () {
         var _this = this;
@@ -293,17 +302,11 @@ var DashboardComponent = (function () {
         console.log('before this.isActive');
         this.isActive = 'false';
         // Stop cron job
-        console.log('before setTimedSMS');
-        // this.apiCallService.setTimedSMS("", "", "", this.isActive, this._id)
-        //   .catch( err => {
-        //   console.log(err);
-        // });
         this.apiCallService.cancelMsgs(this._id).subscribe(function (data) {
             if (data) {
                 console.log('after message canceled', data);
             }
         });
-        console.log('before SetTopics');
         // Update isActive status on user object in database
         this.settingsService.setTopics(this.client).subscribe(function (data) {
             if (data) {
@@ -1013,6 +1016,12 @@ var SettingsService = (function () {
         // add a value to headers
         headers.append('Content-Type', 'application/json');
         return this.http.post('/users/settings', user, { headers: headers }).map(function (res) { return res.json(); });
+    };
+    SettingsService.prototype.getSettings = function (_id) {
+        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["Headers"]();
+        // add a value to headers
+        headers.append('Content-Type', 'application/json');
+        return this.http.get("/users/settings?_id=" + _id).map(function (res) { return res.json(); });
     };
     return SettingsService;
 }());

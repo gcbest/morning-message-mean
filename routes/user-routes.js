@@ -68,7 +68,9 @@ router.get('/profile', passport.authenticate('jwt', {session: false}), (req, res
 
 // Get Settings
 router.get('/settings', (req, res) => {
-
+  User.getUserById(req.query._id, (err, user) => {
+      res.json({user: user});
+  });
 });
 
 // Add Message Topics

@@ -15,4 +15,11 @@ export class SettingsService {
     headers.append('Content-Type', 'application/json');
     return this.http.post('/users/settings', user, {headers: headers}).map(res => res.json());
   }
+
+  getSettings(_id) {
+    let headers = new Headers();
+    // add a value to headers
+    headers.append('Content-Type', 'application/json');
+    return this.http.get(`/users/settings?_id=${_id}`).map(res => res.json());
+  }
 }

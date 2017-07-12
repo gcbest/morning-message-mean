@@ -10,12 +10,12 @@ import {SettingsService} from '../../services/settings.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  client: Object;
   hasWeather: Boolean = false;
   hasNews: Boolean = false;
   hasPositivity: Boolean;
   msgTime: String;
   isActive: String;
-  client: Object;
   _id: String = localStorage.user.split('"')[3];
 
   constructor(
@@ -24,6 +24,14 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.settingsService.getSettings(this._id).subscribe(data => {
+      this.client = data;
+      console.log('data', data);
+      if (data) {
+        this.hasWeather = data.user.settings.hasWeather;
+        this.hasNews = data.user.settings.hasNews;
+      }
+    });
   }
 
 
@@ -114,18 +122,12 @@ export class DashboardComponent implements OnInit {
 
     this.isActive = 'false';
     // Stop cron job
-    console.log('before setTimedSMS');
-    // this.apiCallService.setTimedSMS("", "", "", this.isActive, this._id)
-    //   .catch( err => {
-    //   console.log(err);
-    // });
     this.apiCallService.cancelMsgs(this._id).subscribe(data => {
       if (data) {
         console.log('after message canceled', data);
       }
     });
 
-    console.log('before SetTopics');
     // Update isActive status on user object in database
     this.settingsService.setTopics(this.client).subscribe(data => {
       if (data) {
