@@ -177,7 +177,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n\n<form (submit)=\"onMsgSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Time to Send Message</label>\n    <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n  <input type=\"button\" (onClick)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n  <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-alert\">\n</form>\n\n"
+module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n\n<form (submit)=\"onMsgSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Time to Send Message</label>\n    <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n  <input type=\"button\" (click)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n  <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-alert\">\n</form>\n\n"
 
 /***/ }),
 
@@ -210,6 +210,7 @@ var DashboardComponent = (function () {
         this.settingsService = settingsService;
         this.hasWeather = false;
         this.hasNews = false;
+        this._id = localStorage.user.split('"')[3];
     }
     DashboardComponent.prototype.ngOnInit = function () {
     };
@@ -217,7 +218,7 @@ var DashboardComponent = (function () {
         var _this = this;
         // User selections
         var user = {
-            _id: localStorage.user.split('"')[3],
+            _id: this._id,
             selections: {},
             isActive: this.isActive
         };
@@ -293,9 +294,14 @@ var DashboardComponent = (function () {
         this.isActive = 'false';
         // Stop cron job
         console.log('before setTimedSMS');
-        this.apiCallService.setTimedSMS("", "", "", this.isActive)
-            .catch(function (err) {
-            console.log(err);
+        // this.apiCallService.setTimedSMS("", "", "", this.isActive, this._id)
+        //   .catch( err => {
+        //   console.log(err);
+        // });
+        this.apiCallService.cancelMsgs(this._id).subscribe(function (data) {
+            if (data) {
+                console.log('after message canceled', data);
+            }
         });
         console.log('before SetTopics');
         // Update isActive status on user object in database
@@ -332,7 +338,7 @@ var DashboardComponent = (function () {
         var promiseArr = this.setUserSelections();
         Promise.all(promiseArr).then(function (results) {
             var formattedURL = encodeURIComponent(results.join('\n \n'));
-            _this.apiCallService.setTimedSMS('19734946092', formattedURL, cronFormattedStr, isActive);
+            _this.apiCallService.setTimedSMS('19734946092', formattedURL, cronFormattedStr, isActive, _this._id);
         }).catch(function (err) {
             console.log(err);
         });
@@ -870,9 +876,12 @@ var APICallService = (function () {
         console.log('sms service called');
         return this.http.get("/api/sendsms?phone_num=" + phoneNum + "&text=" + text).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
-    APICallService.prototype.setTimedSMS = function (phoneNum, text, timeStr, isActive) {
+    APICallService.prototype.setTimedSMS = function (phoneNum, text, timeStr, isActive, id) {
         console.log(timeStr);
-        return this.http.get("/api/timedsms/?phone_num=" + phoneNum + "&text=" + text + "&time=" + timeStr + "&is_active=" + isActive).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+        return this.http.get("/api/timedsms/?phone_num=" + phoneNum + "&text=" + text + "&time=" + timeStr + "&is_active=" + isActive + "&_id=" + id).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+    };
+    APICallService.prototype.cancelMsgs = function (_id) {
+        return this.http.post('/api/cancelsms', { _id: _id }).map(function (res) { return res.json(); });
     };
     return APICallService;
 }());

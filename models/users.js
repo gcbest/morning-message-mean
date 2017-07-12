@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require('mongoose-function')(mongoose);
 const bcrypt = require('bcryptjs');
 const config = require('../config/database');
 
@@ -21,6 +22,9 @@ const UserSchema = mongoose.Schema({
   },
   settings: {
     type: Object
+  },
+  jobName: {
+    type: String
   }
 });
 
@@ -45,6 +49,10 @@ module.exports.addUser = (newUser, callback) => {
       newUser.save(callback);
     });
   })
+};
+
+module.exports.addJob = (id, job, callback) => {
+    User.findById(id, callback);
 };
 
 module.exports.comparePassword = (candidatePassword, hash, callback) => {

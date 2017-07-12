@@ -16,6 +16,7 @@ export class DashboardComponent implements OnInit {
   msgTime: String;
   isActive: String;
   client: Object;
+  _id: String = localStorage.user.split('"')[3];
 
   constructor(
     private apiCallService: APICallService,
@@ -29,7 +30,7 @@ export class DashboardComponent implements OnInit {
   setUserSelections() {
     // User selections
     var user = {
-      _id: localStorage.user.split('"')[3],
+      _id: this._id,
       selections: {},
       isActive: this.isActive
     };
@@ -114,9 +115,14 @@ export class DashboardComponent implements OnInit {
     this.isActive = 'false';
     // Stop cron job
     console.log('before setTimedSMS');
-    this.apiCallService.setTimedSMS("", "", "", this.isActive)
-      .catch( err => {
-      console.log(err);
+    // this.apiCallService.setTimedSMS("", "", "", this.isActive, this._id)
+    //   .catch( err => {
+    //   console.log(err);
+    // });
+    this.apiCallService.cancelMsgs(this._id).subscribe(data => {
+      if (data) {
+        console.log('after message canceled', data);
+      }
     });
 
     console.log('before SetTopics');
@@ -156,7 +162,8 @@ export class DashboardComponent implements OnInit {
     var promiseArr = this.setUserSelections();
     Promise.all(promiseArr).then((results) => {
       var formattedURL =  encodeURIComponent(results.join('\n \n'));
-      this.apiCallService.setTimedSMS('19734946092', formattedURL, cronFormattedStr, isActive);
+
+      this.apiCallService.setTimedSMS('19734946092', formattedURL, cronFormattedStr, isActive, this._id);
     }).catch( err => {
       console.log(err);
     });

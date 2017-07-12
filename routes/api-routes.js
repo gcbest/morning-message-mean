@@ -1,10 +1,15 @@
-var express = require('express');
-var router = express.Router();
-var axios = require('axios');
-var stringify = require('json-stringify-safe');
-var CronJob = require('cron').CronJob;
+const express = require('express');
+const router = express.Router();
+const axios = require('axios');
+const stringify = require('json-stringify-safe');
+const CronJob = require('cron').CronJob;
+const User = require('../models/users');
 
-var api_keys = require('../config/api');
+const schedule = require('node-schedule');
+
+
+
+const api_keys = require('../config/api');
 
 router.get('/weather', (req, res) => {
     console.log('req.query.location: ', req.query.location);
@@ -43,39 +48,59 @@ router.get('/sendsms', (req, res) => {
 router.get('/timedsms', (req, res) => {
     var timeStr = decodeURIComponent(req.query.time);
     var isActive = req.query.is_active;
-
     console.log(timeStr);
-    console.log('isActive: ', isActive);
-    var job = new CronJob(timeStr + ' * * 1-5', function() {
-            /*
-             * Runs every weekday (Monday through Friday)
-             * at 11:30:00 AM. It does not run on Saturday
-             * or Sunday.
-             */
+    console.log('isActive:', isActive);
 
+    var rule = new schedule.RecurrenceRule();
+    rule.minute = 25;
+
+    var unique_job_name = req.query.phone_number + req.query._id;
+
+    var j = schedule.scheduleJob(unique_job_name, rule, function () {
             var MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=${api_keys.nexmoAPIKey}&api_secret=${api_keys.nexmoAPISecret}&to=${req.query.phone_num}&from=12035338496&text=${req.query.text}`;
             console.log('nexmo: ', MESSAGING_API_URL);
-            axios.get(MESSAGING_API_URL).then(function(response) {
-                res.send(stringify(response.status, null, 2));
+            axios.get(MESSAGING_API_URL).then(function (response) {
+                // res.send(stringify(response.status, null, 2));
             }, function (rejection) {
                 console.log(rejection);
                 return;
-            }).catch(function (err) { console.log(err) });
+            }).catch(function (err) {
+                console.log(err)
+            });
+        });
 
-        }, function () {
-            /* This function is executed when the job stops */
-            console.log('JOB STOPPED');
-        },
-        true, /* Start the job right now */
-        "America/New_York" /* Time zone of this job. */
-    );
+    User.getUserById(req.query._id, (err, user) => {
+        console.log(user);
+        user.jobName = unique_job_name;
+        user.save((err, updatedUser) => {
+            if (err) console.log(err);
+            res.json(updatedUser);
+            console.log('updatedUser', updatedUser);
+        });
+    });
 
     if (isActive === 'false') {
-        job.stop();
+        j.cancel();
         return;
     }
 
 
+});
+
+router.post('/cancelsms', (req, res) => {
+    console.log('req.body', req.body);
+    User.getUserById(req.body._id, (err, user) => {
+        console.log('user.jobs', user.jobName);
+        var job = schedule.scheduledJobs[user.jobName];
+        job.cancel();
+        user.jobName = "";
+        user.save((err, updatedUser) => {
+            if (err) console.log(err);
+            res.json(updatedUser);
+            console.log('updatedUser', updatedUser);
+            return;
+        });
+    });
 });
 
 module.exports = router;
