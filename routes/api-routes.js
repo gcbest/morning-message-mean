@@ -33,7 +33,7 @@ router.get('/news', (req, res) => {
 });
 
 router.get('/travel', (req, res) => {
-    const origin = req.query.homeaddress;
+    const origin = req.query.origin;
     const destination = req.query.destination;
     const MAPS_API_URL = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${api_keys.mapsAPIKey}`;
 

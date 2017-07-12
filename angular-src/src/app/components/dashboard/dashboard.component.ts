@@ -12,13 +12,17 @@ import {SettingsService} from '../../services/settings.service';
 export class DashboardComponent implements OnInit {
   client: Object;
 
+  // User Boolean Inputs
   hasWeather: Boolean = false;
   hasNews: Boolean = false;
   hasPositivity: Boolean;
   hasTravel: Boolean = false;
   isActive: Boolean = false;
 
+  // User String Inputs
   newsSource = 'CNN';
+  homeAddress: String;
+  workAddress: String;
   zipCode: String;
   msgTime: String;
   // User's mongodb id
@@ -36,7 +40,12 @@ export class DashboardComponent implements OnInit {
       if (data.user.settings) {
         this.hasWeather = data.user.settings.hasWeather;
         this.hasNews = data.user.settings.hasNews;
-        this.hasTravel =data.user.settings.hasTravel;
+        this.hasTravel = data.user.settings.hasTravel;
+        this.newsSource = data.user.settings.newsSource;
+        this.zipCode = data.user.settings.zipCode;
+        this.homeAddress = data.user.settings.homeAddress;
+        this.workAddress = data.user.settings.workAddress;
+        this.msgTime = data.user.settings.msgTime;
       }
     });
   }
@@ -57,7 +66,12 @@ export class DashboardComponent implements OnInit {
     var userSelections = {
       hasWeather: this.hasWeather,
       hasNews: this.hasNews,
-      hasTravel: this.hasTravel
+      hasTravel: this.hasTravel,
+      newsSource: this.newsSource,
+      zipCode: this.zipCode,
+      homeAddress: this.homeAddress,
+      workAddress: this.workAddress,
+      msgTime: this.msgTime
     };
 
     // Add promises to promise array
@@ -78,6 +92,20 @@ export class DashboardComponent implements OnInit {
                 });
               });
               promiseArr.push(weatherPromise);
+            }
+            break;
+          case 'hasTravel':
+            if (userSelections[property] === true) {
+              var travelPromise = new Promise((resolve, reject) => {
+                this.apiCallService.getTravel(this.homeAddress, this.workAddress).then(travel_time => {
+                  console.log('TRAVEL_TIME before encoding', travel_time);
+                  var travel_str = 'Estimated travel time to work: ' + travel_time;
+                  travel_str = encodeURIComponent(travel_str);
+                  console.log('travel_str AFTER encoding', travel_str);
+                  resolve(travel_str);
+                });
+              });
+              promiseArr.push(travelPromise);
             }
             break;
           case 'hasNews':
@@ -105,19 +133,6 @@ export class DashboardComponent implements OnInit {
                 });
               });
               promiseArr.push(newsPromise);
-            }
-            break;
-          case 'hasTravel':
-            if (userSelections[property] === true) {
-              var travelPromise = new Promise((resolve, reject) => {
-                this.apiCallService.getTravel('71 Quitman St Newark, NJ', '1225 Raymond Blvd Newark, NJ').then(travel_time => {
-                  console.log('TRAVEL_TIME before encoding', travel_time);
-                  travel_time = encodeURIComponent(travel_time);
-                  console.log('travel_time AFTER encoding', travel_time);
-                  resolve(travel_time);
-                });
-              });
-              promiseArr.push(travelPromise);
             }
             break;
         }
