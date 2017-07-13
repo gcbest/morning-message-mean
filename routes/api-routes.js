@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const stringify = require('json-stringify-safe');
 const User = require('../models/users');
+const Quote = require('../models/quotes');
 
 const schedule = require('node-schedule');
 
@@ -46,12 +47,21 @@ router.get('/travel', (req, res) => {
 router.get('/quote', (req,res) => {
    // Rate limit 10 calls per hour
     const QUOTES_URL = 'http://quotes.rest/qod.json?category=inspire';
-    axios.get(QUOTES_URL).then(function(response) {
-        console.log('GET /QUOTE response', response);
-        res.json(response.data.contents.quotes);
-    }, function(error) {
-        res.json(error);
+    let quoteOfTheDay = new Quote({quote: {name: 'jamie', date: '2017-07-15'}});
+    Quote.addQuote(quoteOfTheDay, (err, quote) => {
+        if (err) {
+            res.json({success: false, msg: "Failed to add quote"});
+        } else {
+            res.json({success: true, msg: "Quote added"});
+        }
     });
+    // axios.get(QUOTES_URL).then(function(response) {
+    //     console.log('GET /QUOTE response', response);
+    //     // res.json(response.data.contents.quotes);
+    //     res.json(Quote.addQuote(response.data.contents.quotes));
+    // }, function(error) {
+    //     res.json(error);
+    // });
 });
 
 // SMS will be sent immediately
