@@ -180,7 +180,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n<form (submit)=\"onMsgSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n    <input type=\"text\" [(ngModel)]=\"zipCode\" name=\"zipCode\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n    <!-- Single button -->\n    <!--<div class=\"btn-group\" dropdown>-->\n      <!--<button dropdownToggle type=\"button\" class=\"btn btn-primary dropdown-toggle\">-->\n        <!--News Sources <span class=\"caret\"></span>-->\n      <!--</button>-->\n      <!--<ul *dropdownMenu class=\"dropdown-menu\" role=\"menu\"-->\n          <!--[(ngModel)]=\"selectedSource\" (ngModelChange)=\"onChange($event)\">-->\n        <!--<li role=\"menuitem\"><a class=\"dropdown-item\" href=\"#\">CNN</a></li>-->\n        <!--<li role=\"menuitem\"><a class=\"dropdown-item\" href=\"#\">Google News</a></li>-->\n        <!--<li role=\"menuitem\"><a class=\"dropdown-item\" href=\"#\">The New York Times</a></li>-->\n        <!--</li>-->\n      <!--</ul>-->\n    <!--</div>-->\n  <select [(ngModel)]=\"newsSource\" name=\"newsSource\" (ngModelChange)=\"onNewsChange($event)\">\n    <option>CNN</option>\n    <option>Google News</option>\n    <option>The New York Times</option>\n  </select>\n  <div class=\"form-group\">\n    <label>Travel Time</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasTravel\" name=\"hasTravel\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Home Address</label>\n    <input type=\"text\" [(ngModel)]=\"homeAddress\" name=\"homeAddress\" class=\"form-control\">\n  </div><div class=\"form-group\">\n  <label>Work Address</label>\n  <input type=\"text\" [(ngModel)]=\"workAddress\" name=\"workAddress\" class=\"form-control\">\n</div>\n  <div class=\"form-group\">\n    <label>Time to Send Message</label>\n    <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n  <input type=\"button\" (click)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n  <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-danger\">\n</form>\n\n"
+module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n<form (submit)=\"onMsgSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n    <input type=\"text\" [(ngModel)]=\"zipCode\" name=\"zipCode\" class=\"form-control\" placeholder=\"Address or Zip Code\">\n  </div>\n  <div class=\"form-group\">\n    <label>Quote of the Day</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasQuote\" name=\"hasQuote\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n  <select [(ngModel)]=\"newsSource\" name=\"newsSource\" (ngModelChange)=\"onNewsChange($event)\">\n    <option>CNN</option>\n    <option>Google News</option>\n    <option>The New York Times</option>\n  </select>\n  <div class=\"form-group\">\n    <label>Travel Time</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasTravel\" name=\"hasTravel\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Home Address</label>\n    <input type=\"text\" [(ngModel)]=\"homeAddress\" name=\"homeAddress\" class=\"form-control\">\n  </div><div class=\"form-group\">\n  <label>Work Address</label>\n  <input type=\"text\" [(ngModel)]=\"workAddress\" name=\"workAddress\" class=\"form-control\">\n</div>\n  <div class=\"form-group\">\n    <label>Time to Send Message</label>\n    <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n  <input type=\"button\" (click)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n  <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-danger\">\n</form>\n\n"
 
 /***/ }),
 
@@ -214,6 +214,7 @@ var DashboardComponent = (function () {
         // User Boolean Inputs
         this.hasWeather = false;
         this.hasNews = false;
+        this.hasQuote = false;
         this.hasTravel = false;
         this.isActive = false;
         // User String Inputs
@@ -230,6 +231,7 @@ var DashboardComponent = (function () {
                 _this.hasWeather = data.user.settings.hasWeather;
                 _this.hasNews = data.user.settings.hasNews;
                 _this.hasTravel = data.user.settings.hasTravel;
+                _this.hasQuote = data.user.settings.hasQuote;
                 _this.newsSource = data.user.settings.newsSource;
                 _this.zipCode = data.user.settings.zipCode;
                 _this.homeAddress = data.user.settings.homeAddress;
@@ -254,6 +256,7 @@ var DashboardComponent = (function () {
             hasWeather: this.hasWeather,
             hasNews: this.hasNews,
             hasTravel: this.hasTravel,
+            hasQuote: this.hasQuote,
             newsSource: this.newsSource,
             zipCode: this.zipCode,
             homeAddress: this.homeAddress,
@@ -285,12 +288,30 @@ var DashboardComponent = (function () {
                                 _this.apiCallService.getTravel(_this.homeAddress, _this.workAddress).then(function (travel_time) {
                                     console.log('TRAVEL_TIME before encoding', travel_time);
                                     var travel_str = 'Estimated travel time to work: ' + travel_time;
-                                    travel_str = encodeURIComponent(travel_str);
+                                    travel_str = encodeURIComponent(travel_str).replace(/'/g, "%27");
                                     console.log('travel_str AFTER encoding', travel_str);
                                     resolve(travel_str);
                                 });
                             });
                             promiseArr.push(travelPromise);
+                        }
+                        break;
+                    case 'hasQuote':
+                        if (userSelections[property] === true) {
+                            var quotePromise = new Promise(function (resolve, reject) {
+                                _this.apiCallService.getQuote().then(function (quote) {
+                                    console.log('Quote before encoding', quote);
+                                    var formattedQuote = quote[0].quote + '\n -' + quote[0].author;
+                                    formattedQuote = encodeURIComponent(formattedQuote);
+                                    _this.quoteOfTheDay = formattedQuote;
+                                    console.log('This.Quote of the day', _this.quoteOfTheDay);
+                                    if (quote[0].quote.length < 1) {
+                                        resolve(_this.quoteOfTheDay);
+                                    }
+                                    resolve(formattedQuote);
+                                });
+                            });
+                            promiseArr.push(quotePromise);
                         }
                         break;
                     case 'hasNews':
@@ -354,13 +375,6 @@ var DashboardComponent = (function () {
                 console.log('after message canceled', data);
             }
         });
-        // Update isActive status on user object in database
-        // this.settingsService.setTopics(this.client).subscribe(data => {
-        //   if (data) {
-        //     console.log('after isActive updated to false', data);
-        //     this.client = data;
-        //   }
-        // });
     };
     DashboardComponent.prototype.onMsgSubmit = function () {
         var _this = this;
@@ -912,6 +926,10 @@ var APICallService = (function () {
     // Directions API
     APICallService.prototype.getTravel = function (homeAddress, workAddress) {
         return this.http.get("/api/travel?origin=" + homeAddress + "&destination=" + workAddress).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+    };
+    // Quotes API
+    APICallService.prototype.getQuote = function () {
+        return this.http.get('/api/quote').map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     // Messaging API
     APICallService.prototype.sendSMS = function (phoneNum, text) {

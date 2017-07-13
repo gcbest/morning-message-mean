@@ -23,6 +23,11 @@ export class APICallService {
     return this.http.get(`/api/travel?origin=${homeAddress}&destination=${workAddress}`).map(res => res.json()).toPromise().then(data => data);
   }
 
+  // Quotes API
+  getQuote() {
+    return this.http.get('/api/quote').map(res => res.json()).toPromise().then(data => data);
+  }
+
   // Messaging API
   sendSMS(phoneNum, text) {
     return this.http.get(`/api/sendsms?phone_num=${phoneNum}&text=${text}`).map(res => res.json()).toPromise().then(data => data);

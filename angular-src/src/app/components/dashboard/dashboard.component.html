@@ -4,25 +4,16 @@
   <div class="form-group">
     <label>Weather</label>
     <input type="checkbox" [(ngModel)]="hasWeather" name="hasWeather" class="form-control">
-    <input type="text" [(ngModel)]="zipCode" name="zipCode" class="form-control">
+    <input type="text" [(ngModel)]="zipCode" name="zipCode" class="form-control" placeholder="Address or Zip Code">
+  </div>
+  <div class="form-group">
+    <label>Quote of the Day</label>
+    <input type="checkbox" [(ngModel)]="hasQuote" name="hasQuote" class="form-control">
   </div>
   <div class="form-group">
     <label>News</label>
     <input type="checkbox" [(ngModel)]="hasNews" name="hasNews" class="form-control">
   </div>
-    <!-- Single button -->
-    <!--<div class="btn-group" dropdown>-->
-      <!--<button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">-->
-        <!--News Sources <span class="caret"></span>-->
-      <!--</button>-->
-      <!--<ul *dropdownMenu class="dropdown-menu" role="menu"-->
-          <!--[(ngModel)]="selectedSource" (ngModelChange)="onChange($event)">-->
-        <!--<li role="menuitem"><a class="dropdown-item" href="#">CNN</a></li>-->
-        <!--<li role="menuitem"><a class="dropdown-item" href="#">Google News</a></li>-->
-        <!--<li role="menuitem"><a class="dropdown-item" href="#">The New York Times</a></li>-->
-        <!--</li>-->
-      <!--</ul>-->
-    <!--</div>-->
   <select [(ngModel)]="newsSource" name="newsSource" (ngModelChange)="onNewsChange($event)">
     <option>CNN</option>
     <option>Google News</option>

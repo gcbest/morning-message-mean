@@ -43,6 +43,17 @@ router.get('/travel', (req, res) => {
     });
 });
 
+router.get('/quote', (req,res) => {
+   // Rate limit 10 calls per hour
+    const QUOTES_URL = 'http://quotes.rest/qod.json?category=inspire';
+    axios.get(QUOTES_URL).then(function(response) {
+        console.log('GET /QUOTE response', response);
+        res.json(response.data.contents.quotes);
+    }, function(error) {
+        res.json(error);
+    });
+});
+
 // SMS will be sent immediately
 router.get('/sendsms', (req, res) => {
     var MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=${api_keys.nexmoAPIKey}&api_secret=${api_keys.nexmoAPISecret}&to=${req.query.phone_num}&from=12035338496&text=${req.query.text}`;

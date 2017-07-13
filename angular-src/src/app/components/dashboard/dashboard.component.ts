@@ -15,7 +15,7 @@ export class DashboardComponent implements OnInit {
   // User Boolean Inputs
   hasWeather: Boolean = false;
   hasNews: Boolean = false;
-  hasPositivity: Boolean;
+  hasQuote: Boolean = false;
   hasTravel: Boolean = false;
   isActive: Boolean = false;
 
@@ -25,6 +25,10 @@ export class DashboardComponent implements OnInit {
   workAddress: String;
   zipCode: String;
   msgTime: String;
+
+  // String to store the quote of the day
+  quoteOfTheDay: String;
+
   // User's mongodb id
   _id: String = localStorage.user.split('"')[3];
 
@@ -41,6 +45,7 @@ export class DashboardComponent implements OnInit {
         this.hasWeather = data.user.settings.hasWeather;
         this.hasNews = data.user.settings.hasNews;
         this.hasTravel = data.user.settings.hasTravel;
+        this.hasQuote = data.user.settings.hasQuote;
         this.newsSource = data.user.settings.newsSource;
         this.zipCode = data.user.settings.zipCode;
         this.homeAddress = data.user.settings.homeAddress;
@@ -67,6 +72,7 @@ export class DashboardComponent implements OnInit {
       hasWeather: this.hasWeather,
       hasNews: this.hasNews,
       hasTravel: this.hasTravel,
+      hasQuote: this.hasQuote,
       newsSource: this.newsSource,
       zipCode: this.zipCode,
       homeAddress: this.homeAddress,
@@ -100,12 +106,30 @@ export class DashboardComponent implements OnInit {
                 this.apiCallService.getTravel(this.homeAddress, this.workAddress).then(travel_time => {
                   console.log('TRAVEL_TIME before encoding', travel_time);
                   var travel_str = 'Estimated travel time to work: ' + travel_time;
-                  travel_str = encodeURIComponent(travel_str);
+                  travel_str = encodeURIComponent(travel_str).replace(/'/g, "%27");
                   console.log('travel_str AFTER encoding', travel_str);
                   resolve(travel_str);
                 });
               });
               promiseArr.push(travelPromise);
+            }
+            break;
+          case 'hasQuote':
+            if (userSelections[property] === true) {
+              var quotePromise = new Promise((resolve, reject) => {
+                this.apiCallService.getQuote().then(quote => {
+                  console.log('Quote before encoding', quote);
+                  var formattedQuote = quote[0].quote + '\n -' + quote[0].author;
+                  formattedQuote = encodeURIComponent(formattedQuote);
+                  this.quoteOfTheDay = formattedQuote;
+                  console.log('This.Quote of the day', this.quoteOfTheDay);
+                  if (quote[0].quote.length < 1) {
+                    resolve(this.quoteOfTheDay);
+                  }
+                  resolve(formattedQuote);
+                });
+              });
+              promiseArr.push(quotePromise);
             }
             break;
           case 'hasNews':
@@ -178,14 +202,6 @@ export class DashboardComponent implements OnInit {
         console.log('after message canceled', data);
       }
     });
-
-    // Update isActive status on user object in database
-    // this.settingsService.setTopics(this.client).subscribe(data => {
-    //   if (data) {
-    //     console.log('after isActive updated to false', data);
-    //     this.client = data;
-    //   }
-    // });
   }
 
 
