@@ -47,21 +47,56 @@ router.get('/travel', (req, res) => {
 router.get('/quote', (req,res) => {
    // Rate limit 10 calls per hour
     const QUOTES_URL = 'http://quotes.rest/qod.json?category=inspire';
-    let quoteOfTheDay = new Quote({quote: {name: 'jamie', date: '2017-07-15'}});
-    Quote.addQuote(quoteOfTheDay, (err, quote) => {
-        if (err) {
-            res.json({success: false, msg: "Failed to add quote"});
-        } else {
-            res.json({success: true, msg: "Quote added"});
-        }
+    // let quoteOfTheDay = new Quote({quote: {name: 'belive in yoself', date: '2017-07-17'}});
+    Quote.getTodaysQuote((err, todaysQuote) => {
+       if (err) {
+           console.error(err);
+       }
+       console.log('todaysQuote from GET API/QUOTE', todaysQuote);
+
+        // If there is no quote for today in the database,
+        // get it from the API, add it to the database, and send it to client
+       if (todaysQuote.length < 1) {
+
+           // Quote.checkTomorrowsQuote((err, quoteFound) => {
+           //     if (err) {
+           //         console.error(err);
+           //     }
+           //
+           //     if (quoteFound.length < 1) {
+           //
+           //     }
+           // });
+           axios.get(QUOTES_URL).then(function(response) {
+               console.log('HAD TO CALL QUOTES API');
+               // res.json(response.data.contents.quotes);
+               const quoteInfo = response.data.contents.quotes[0];
+               console.log('response.data.contents.quotes', response.data.contents.quotes);
+               console.log('response.data.contents.quotes DATE', response.data.contents.quotes[0].date);
+               let quoteOfTheDay = new Quote({
+                   quote: quoteInfo,
+                   date: quoteInfo.date
+               });
+
+               Quote.addQuote(quoteOfTheDay, (err) => {
+                   if (err) {
+                       res.json({success: false, msg: "Failed to add quote"});
+                   } else {
+                       res.json(quoteInfo);
+                   }
+               });
+           }, function(error) {
+               res.json(error);
+           });
+       } else {
+           // If there is already a quote in the database for today send it to client
+           const quoteData = todaysQuote[0].quote[0];
+           res.json(quoteData);
+       }
     });
-    // axios.get(QUOTES_URL).then(function(response) {
-    //     console.log('GET /QUOTE response', response);
-    //     // res.json(response.data.contents.quotes);
-    //     res.json(Quote.addQuote(response.data.contents.quotes));
-    // }, function(error) {
-    //     res.json(error);
-    // });
+
+
+
 });
 
 // SMS will be sent immediately

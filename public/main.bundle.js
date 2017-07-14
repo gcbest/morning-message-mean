@@ -299,13 +299,14 @@ var DashboardComponent = (function () {
                     case 'hasQuote':
                         if (userSelections[property] === true) {
                             var quotePromise = new Promise(function (resolve, reject) {
-                                _this.apiCallService.getQuote().then(function (quote) {
-                                    console.log('Quote before encoding', quote);
-                                    var formattedQuote = quote[0].quote + '\n -' + quote[0].author;
+                                _this.apiCallService.getQuote().then(function (quoteInfo) {
+                                    debugger;
+                                    console.log('Quote before encoding', quoteInfo);
+                                    var formattedQuote = quoteInfo.quote + '\n -' + quoteInfo.author;
+                                    console.log('formattedQuote', formattedQuote);
                                     formattedQuote = encodeURIComponent(formattedQuote);
                                     _this.quoteOfTheDay = formattedQuote;
-                                    console.log('This.Quote of the day', _this.quoteOfTheDay);
-                                    if (quote[0].quote.length < 1) {
+                                    if (quoteInfo.quote.length < 1) {
                                         resolve(_this.quoteOfTheDay);
                                     }
                                     resolve(formattedQuote);

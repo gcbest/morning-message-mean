@@ -3,7 +3,7 @@ const moment = require('moment');
 
 const QuoteSchema = new mongoose.Schema({
     quote: {
-        type: Object
+        type: Array
     },
     date: {
         type: String
@@ -13,30 +13,30 @@ const QuoteSchema = new mongoose.Schema({
 // Quote model
 const Quote = module.exports = mongoose.model('Quote', QuoteSchema);
 
-module.exports.getTodaysQuote = () => {
-    var todaysDate = moment().format("YYYY-MM-DD");
+module.exports.getTodaysQuote = (callback) => {
+    const todaysDate = moment().format("YYYY-MM-DD");
+    const tomorrowsDate = moment().add(1, 'day').format("YYYY-MM-DD");
+
+    const query = { $or: [{"date": todaysDate}, {"date": tomorrowsDate} ]};
+    Quote.find(query, callback);
 };
 
-module.exports.addQuote = (quote, callback) => {
-    var todaysDate = moment().format("YYYY-MM-DD");
-    console.log('todaysDate', todaysDate);
-    // Setup stuff
-    var query = { date: todaysDate },
-        update = { expire: new Date() },
-        options = { upsert: true };
+// module.exports.checkTomorrowsQuote = (callback) => {
+//
+//     const query = {"date": tomorrowsDate};
+//     Quote.find(query, callback);
+// };
 
-    // Find the document
-    Quote.findOneAndUpdate(query, update, options, function(error, result) {
-        if (!error) {
-            // If the document doesn't exist
-            if (!result) {
-                // Create it
-                result = quote;
-            }
-            // Save the document
-            result.save(callback);
-        } else {
-            console.error(error);
-        }
-    });
+module.exports.addQuote = (quote, callback) => {
+    const todaysDate = moment().format("YYYY-MM-DD");
+    const tomorrowsDate = moment().add(1, 'day').format("YYYY-MM-DD");
+
+    const query = { $or: [{"date": todaysDate}, {"date": tomorrowsDate} ]};
+
+    Quote.update(
+        query,
+        {$setOnInsert: quote},
+        {upsert: true},
+        callback
+    );
 };

@@ -117,13 +117,15 @@ export class DashboardComponent implements OnInit {
           case 'hasQuote':
             if (userSelections[property] === true) {
               var quotePromise = new Promise((resolve, reject) => {
-                this.apiCallService.getQuote().then(quote => {
-                  console.log('Quote before encoding', quote);
-                  var formattedQuote = quote[0].quote + '\n -' + quote[0].author;
+                this.apiCallService.getQuote().then(quoteInfo => {
+                  debugger;
+                  console.log('Quote before encoding', quoteInfo);
+                  var formattedQuote = quoteInfo.quote + '\n -' + quoteInfo.author;
+                  console.log('formattedQuote', formattedQuote);
+
                   formattedQuote = encodeURIComponent(formattedQuote);
                   this.quoteOfTheDay = formattedQuote;
-                  console.log('This.Quote of the day', this.quoteOfTheDay);
-                  if (quote[0].quote.length < 1) {
+                  if (quoteInfo.quote.length < 1) {
                     resolve(this.quoteOfTheDay);
                   }
                   resolve(formattedQuote);
