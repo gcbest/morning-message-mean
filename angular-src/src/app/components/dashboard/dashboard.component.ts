@@ -75,6 +75,15 @@ export class DashboardComponent implements OnInit {
     return this.hasTravel = !this.hasTravel;
   }
 
+  // Only display the form if the user has selected at least one option
+  displayForm() {
+    if (this.hasNews || this.hasQuote || this.hasTravel || this.hasWeather) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   setUserSelections() {
     // User selections
     var user = {

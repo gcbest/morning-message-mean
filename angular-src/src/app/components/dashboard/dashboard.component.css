@@ -1,3 +1,26 @@
 img {
   width: 100%;
+  background: transparent;
+  -webkit-filter: opacity(.2);
+  filter: opacity(.2);
+}
+
+.chosen {
+  -webkit-filter: opacity(1);
+  filter: opacity(1);
+}
+
+
+.row-eq-height{
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 0;
+}
+.row-eq-height [class*="col-"]{
+  padding: 0;
+}
+.row-eq-height img{
+  width: 100%;
 }
