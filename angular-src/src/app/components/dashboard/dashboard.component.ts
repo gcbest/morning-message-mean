@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import 'rxjs/add/operator/map';
+import {FlashMessagesService} from 'angular2-flash-messages';
 
 import {APICallService} from '../../services/apiCall.service';
 import {SettingsService} from '../../services/settings.service';
+import {ValidateService} from '../../services/validate.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,7 +12,7 @@ import {SettingsService} from '../../services/settings.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  client: Object;
+  client;
 
   // User Boolean Inputs
   hasWeather: Boolean = false;
@@ -31,15 +33,19 @@ export class DashboardComponent implements OnInit {
 
   // User's mongodb id
   _id: String = localStorage.user.split('"')[3];
+  // User's phone number
+
 
   constructor(
     private apiCallService: APICallService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private validateService: ValidateService,
+    private flashMessage: FlashMessagesService
   ) { }
 
   ngOnInit() {
     this.settingsService.getSettings(this._id).subscribe(data => {
-      this.client = data;
+      this.client = data.user;
       console.log('data', data);
       if (data.user.settings) {
         this.hasWeather = data.user.settings.hasWeather;
@@ -71,7 +77,7 @@ export class DashboardComponent implements OnInit {
     return this.hasNews = !this.hasNews;
   }
 
-  toggleTravel(bool) {
+  toggleTravel() {
     return this.hasTravel = !this.hasTravel;
   }
 
@@ -193,7 +199,7 @@ export class DashboardComponent implements OnInit {
     user.selections = userSelections;
     this.settingsService.setTopics(user).subscribe(data => {
       if (data) {
-        console.log(data);
+        console.log('settingsService updated user', data);
         this.client = data;
       }
     });
@@ -234,28 +240,37 @@ export class DashboardComponent implements OnInit {
 
 
   onMsgSubmit() {
-    // Grab the user's input
-    var hour = parseInt(this.msgTime.slice(0, 2));
-    var minute = parseInt(this.msgTime.slice(3, 5));
-    var ampm = this.msgTime.slice(6, 8).toLowerCase();
+    // Validate user's time input
+    // if (this.validateService.validateTime(this.msgTime)) {
+      // Grab the user's input
+      var hour = parseInt(this.msgTime.slice(0, 2));
+      var minute = parseInt(this.msgTime.slice(3, 5));
+      var ampm = this.msgTime.slice(6, 8).toLowerCase();
 
-    // Convert it a time cron can use
-    if(ampm == "pm" && hour<12) hour = hour+12;
-    if(ampm == "am" && hour==12) hour = hour-12;
+      // Convert it a time cron can use
+      if(ampm == "pm" && hour<12) hour = hour+12;
+      if(ampm == "am" && hour==12) hour = hour-12;
 
-    var timeObj = {
-      hour: hour,
-      min: minute
-    };
+      var timeObj = {
+        hour: hour,
+        min: minute
+      };
 
-    var promiseArr = this.setUserSelections();
-    Promise.all(promiseArr).then((results) => {
-      var formattedURL =  encodeURIComponent(results.join('\n \n'));
+      var promiseArr = this.setUserSelections();
+      Promise.all(promiseArr).then((results) => {
+        const formattedURL =  encodeURIComponent(results.join('\n \n'));
+        const phone = this.client.phone;
 
-      this.apiCallService.setTimedSMS('19734946092', formattedURL, timeObj, this._id);
-    }).catch( err => {
-      console.log(err);
-    });
+        console.log('this.client.phone', this.client.phone);
+        this.apiCallService.setTimedSMS(this.client.phone, formattedURL, timeObj, this._id);
+      }).catch( err => {
+        console.log(err);
+      });
+    // } else {
+    //   return this.flashMessage.show('Please use valid time format', {cssClass: 'alert-danger', timeout: 3000});
+    // }
+
+
 
 
 

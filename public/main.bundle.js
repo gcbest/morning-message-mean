@@ -180,7 +180,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"row\">\n  <div class=\"col-sm-12\">\n    <h2 class=\"page-header\">Welcome to your Dashboard</h2>\n    <h4>Select the information you would like to receive</h4>\n    <div class=\"row\">\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleWeather()\" [class.chosen]=\"hasWeather\" src=\"https://maxcdn.icons8.com/Share/icon/Weather//partly_cloudy_day_filled1600.png\" alt=\"Weather\">\n          </div>\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleQuote()\" [class.chosen]=\"hasQuote\" src=\"https://image.freepik.com/free-icon/conversation-mark-interface-symbol-of-circular-speech-bubble-with-quotes-signs-inside_318-56572.jpg\" alt=\"Quote\">\n          </div>\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleNews()\" [class.chosen]=\"hasNews\" src=\"http://ckecommunity.com/wp-content/uploads/2015/07/7_MTUtMDYtMTUtbmV3cy0x.jpg\" alt=\"News\">\n          </div>\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleTravel()\" [class.chosen]=\"hasTravel\" src=\"https://image.flaticon.com/icons/svg/55/55172.svg\" alt=\"Travel\">\n          </div>\n\n          <div class=\"col-sm-12\" *ngIf=\"displayForm()\">\n            <form (submit)=\"onMsgSubmit()\">\n              <div *ngIf=\"hasWeather\" class=\"form-group\">\n                <label>Weather</label>\n                <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control hide\">\n                <input type=\"text\" [(ngModel)]=\"zipCode\" name=\"zipCode\" class=\"form-control\" placeholder=\"Enter Address or Zip Code\">\n              </div>\n              <div class=\"form-group\">\n                <input type=\"checkbox\" [(ngModel)]=\"hasQuote\" name=\"hasQuote\" class=\"form-control hide\">\n              </div>\n              <div *ngIf=\"hasNews\" class=\"form-group\">\n                <label>News</label>\n                <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control hide\">\n                <select [(ngModel)]=\"newsSource\" name=\"newsSource\" (ngModelChange)=\"onNewsChange($event)\">\n                  <option>CNN</option>\n                  <option>Google News</option>\n                  <option>The New York Times</option>\n                </select>\n              </div>\n              <div *ngIf=\"hasTravel\" class=\"form-group\">\n                <label>Travel Time</label>\n                <input type=\"checkbox\" [(ngModel)]=\"hasTravel\" name=\"hasTravel\" class=\"form-control hide\">\n                <label>Home Address</label>\n                <input type=\"text\" [(ngModel)]=\"homeAddress\" name=\"homeAddress\" class=\"form-control\">\n                <label>Work Address</label>\n                <input type=\"text\" [(ngModel)]=\"workAddress\" name=\"workAddress\" class=\"form-control\">\n              </div>\n\n            <div class=\"form-group\">\n              <label>What time would you like your message sent?</label>\n              <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n            </div>\n            <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n            <input type=\"button\" (click)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n            <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-danger\">\n            </form>\n\n          </div>\n    </div>\n</div>\n</div>\n"
+module.exports = "<div class=\"row\">\n  <div class=\"col-sm-12\">\n    <h2 *ngIf=\"client\">Hi, {{ client.name }}</h2>\n    <h3 class=\"page-header\">Welcome to your Dashboard</h3>\n    <h4>Select the information you would like to receive</h4>\n    <div class=\"row\">\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleWeather()\" [class.chosen]=\"hasWeather\" src=\"https://maxcdn.icons8.com/Share/icon/Weather//partly_cloudy_day_filled1600.png\" alt=\"Weather\">\n          </div>\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleQuote()\" [class.chosen]=\"hasQuote\" src=\"https://image.freepik.com/free-icon/conversation-mark-interface-symbol-of-circular-speech-bubble-with-quotes-signs-inside_318-56572.jpg\" alt=\"Quote\">\n          </div>\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleNews()\" [class.chosen]=\"hasNews\" src=\"http://ckecommunity.com/wp-content/uploads/2015/07/7_MTUtMDYtMTUtbmV3cy0x.jpg\" alt=\"News\">\n          </div>\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleTravel()\" [class.chosen]=\"hasTravel\" src=\"https://image.flaticon.com/icons/svg/55/55172.svg\" alt=\"Travel\">\n          </div>\n\n          <div class=\"col-sm-12\" *ngIf=\"displayForm()\">\n            <form (submit)=\"onMsgSubmit()\">\n              <div *ngIf=\"hasWeather\" class=\"form-group\">\n                <label>Weather</label>\n                <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control hide\">\n                <input type=\"text\" [(ngModel)]=\"zipCode\" name=\"zipCode\" class=\"form-control\" placeholder=\"Enter Address or Zip Code\">\n              </div>\n              <div class=\"form-group\">\n                <input type=\"checkbox\" [(ngModel)]=\"hasQuote\" name=\"hasQuote\" class=\"form-control hide\">\n              </div>\n              <div *ngIf=\"hasNews\" class=\"form-group\">\n                <label>News</label>\n                <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control hide\">\n                <select [(ngModel)]=\"newsSource\" name=\"newsSource\" (ngModelChange)=\"onNewsChange($event)\">\n                  <option>CNN</option>\n                  <option>Google News</option>\n                  <option>The New York Times</option>\n                </select>\n              </div>\n              <div *ngIf=\"hasTravel\" class=\"form-group\">\n                <label>Travel Time</label>\n                <input type=\"checkbox\" [(ngModel)]=\"hasTravel\" name=\"hasTravel\" class=\"form-control hide\">\n                <label>Home Address</label>\n                <input type=\"text\" [(ngModel)]=\"homeAddress\" name=\"homeAddress\" class=\"form-control\">\n                <label>Work Address</label>\n                <input type=\"text\" [(ngModel)]=\"workAddress\" name=\"workAddress\" class=\"form-control\">\n              </div>\n\n            <flash-messages></flash-messages>\n            <div class=\"form-group\">\n              <label>What time would you like your message sent?</label>\n              <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n            </div>\n            <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n            <input type=\"button\" (click)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n            <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-danger\">\n            </form>\n\n          </div>\n    </div>\n</div>\n</div>\n"
 
 /***/ }),
 
@@ -191,8 +191,11 @@ module.exports = "<div class=\"row\">\n  <div class=\"col-sm-12\">\n    <h2 clas
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_apiCall_service__ = __webpack_require__("../../../../../src/app/services/apiCall.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_settings_service__ = __webpack_require__("../../../../../src/app/services/settings.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_angular2_flash_messages__ = __webpack_require__("../../../../angular2-flash-messages/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_angular2_flash_messages___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_angular2_flash_messages__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_apiCall_service__ = __webpack_require__("../../../../../src/app/services/apiCall.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_settings_service__ = __webpack_require__("../../../../../src/app/services/settings.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__services_validate_service__ = __webpack_require__("../../../../../src/app/services/validate.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DashboardComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -207,10 +210,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
+
 var DashboardComponent = (function () {
-    function DashboardComponent(apiCallService, settingsService) {
+    // User's phone number
+    function DashboardComponent(apiCallService, settingsService, validateService, flashMessage) {
         this.apiCallService = apiCallService;
         this.settingsService = settingsService;
+        this.validateService = validateService;
+        this.flashMessage = flashMessage;
         // User Boolean Inputs
         this.hasWeather = false;
         this.hasNews = false;
@@ -225,7 +233,7 @@ var DashboardComponent = (function () {
     DashboardComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.settingsService.getSettings(this._id).subscribe(function (data) {
-            _this.client = data;
+            _this.client = data.user;
             console.log('data', data);
             if (data.user.settings) {
                 _this.hasWeather = data.user.settings.hasWeather;
@@ -252,7 +260,7 @@ var DashboardComponent = (function () {
     DashboardComponent.prototype.toggleNews = function () {
         return this.hasNews = !this.hasNews;
     };
-    DashboardComponent.prototype.toggleTravel = function (bool) {
+    DashboardComponent.prototype.toggleTravel = function () {
         return this.hasTravel = !this.hasTravel;
     };
     // Only display the form if the user has selected at least one option
@@ -367,7 +375,7 @@ var DashboardComponent = (function () {
         user.selections = userSelections;
         this.settingsService.setTopics(user).subscribe(function (data) {
             if (data) {
-                console.log(data);
+                console.log('settingsService updated user', data);
                 _this.client = data;
             }
         });
@@ -400,6 +408,8 @@ var DashboardComponent = (function () {
     };
     DashboardComponent.prototype.onMsgSubmit = function () {
         var _this = this;
+        // Validate user's time input
+        // if (this.validateService.validateTime(this.msgTime)) {
         // Grab the user's input
         var hour = parseInt(this.msgTime.slice(0, 2));
         var minute = parseInt(this.msgTime.slice(3, 5));
@@ -416,10 +426,15 @@ var DashboardComponent = (function () {
         var promiseArr = this.setUserSelections();
         Promise.all(promiseArr).then(function (results) {
             var formattedURL = encodeURIComponent(results.join('\n \n'));
-            _this.apiCallService.setTimedSMS('19734946092', formattedURL, timeObj, _this._id);
+            var phone = _this.client.phone;
+            console.log('this.client.phone', _this.client.phone);
+            _this.apiCallService.setTimedSMS(_this.client.phone, formattedURL, timeObj, _this._id);
         }).catch(function (err) {
             console.log(err);
         });
+        // } else {
+        //   return this.flashMessage.show('Please use valid time format', {cssClass: 'alert-danger', timeout: 3000});
+        // }
         // // Twilio Credentials
         // const accountSid = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
         // const authToken = 'your_auth_token';
@@ -447,10 +462,10 @@ DashboardComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/components/dashboard/dashboard.component.html"),
         styles: [__webpack_require__("../../../../../src/app/components/dashboard/dashboard.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__services_apiCall_service__["a" /* APICallService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__services_apiCall_service__["a" /* APICallService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__services_settings_service__["a" /* SettingsService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__services_settings_service__["a" /* SettingsService */]) === "function" && _b || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__services_apiCall_service__["a" /* APICallService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__services_apiCall_service__["a" /* APICallService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_4__services_settings_service__["a" /* SettingsService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__services_settings_service__["a" /* SettingsService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_5__services_validate_service__["a" /* ValidateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__services_validate_service__["a" /* ValidateService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2_angular2_flash_messages__["FlashMessagesService"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_angular2_flash_messages__["FlashMessagesService"]) === "function" && _d || Object])
 ], DashboardComponent);
 
-var _a, _b;
+var _a, _b, _c, _d;
 //# sourceMappingURL=dashboard.component.js.map
 
 /***/ }),
@@ -779,7 +794,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/register/register.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2 class=\"page-header\">Register</h2>\n<form (submit)=\"onRegisterSubmit()\">\n  <div class=\"form-group\">\n    <label>Name</label>\n    <input type=\"text\" [(ngModel)]=\"name\" name=\"name\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Username</label>\n    <input type=\"text\" [(ngModel)]=\"username\" name=\"username\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Email</label>\n    <input type=\"text\" [(ngModel)]=\"email\" name=\"email\" class=\"form-control\" >\n  </div>\n  <div class=\"form-group\">\n    <label>Password</label>\n    <input type=\"password\" [(ngModel)]=\"password\" name=\"password\" class=\"form-control\">\n  </div>\n  <input type=\"submit\" class=\"btn btn-primary\" value=\"Submit\">\n</form>\n"
+module.exports = "<h2 class=\"page-header\">Register</h2>\n<form (submit)=\"onRegisterSubmit()\">\n  <div class=\"form-group\">\n    <label>Name</label>\n    <input type=\"text\" [(ngModel)]=\"name\" name=\"name\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Mobile Number</label>\n    <input type=\"text\" [(ngModel)]=\"phone\" name=\"phone\" class=\"form-control\" placeholder=\"Format: Country Code + Number e.g. 16092034567\">\n  </div>\n  <div class=\"form-group\">\n    <label>Email</label>\n    <input type=\"text\" [(ngModel)]=\"email\" name=\"email\" class=\"form-control\" >\n  </div>\n  <div class=\"form-group\">\n    <label>Username</label>\n    <input type=\"text\" [(ngModel)]=\"username\" name=\"username\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Password</label>\n    <input type=\"password\" [(ngModel)]=\"password\" name=\"password\" class=\"form-control\">\n  </div>\n  <input type=\"submit\" class=\"btn btn-primary\" value=\"Submit\">\n</form>\n"
 
 /***/ }),
 
@@ -823,16 +838,22 @@ var RegisterComponent = (function () {
             name: this.name,
             username: this.username,
             email: this.email,
-            password: this.password
+            phone: this.phone,
+            password: this.password,
         };
         // Required fields
         if (!this.validateService.validateRegister(user)) {
-            this.flashMessage.show('Fill out all fields', { cssClass: 'alert-danger', timeout: 3000 });
+            this.flashMessage.show('Please fill out all fields', { cssClass: 'alert-danger', timeout: 3000 });
             return false;
         }
         // Validate email
         if (!this.validateService.validateEmail(user.email)) {
-            this.flashMessage.show('Use valid email', { cssClass: 'alert-danger', timeout: 3000 });
+            this.flashMessage.show('Please use valid email', { cssClass: 'alert-danger', timeout: 3000 });
+            return false;
+        }
+        // Validate phone
+        if (!this.validateService.validatePhone(user.phone)) {
+            this.flashMessage.show('Please use valid phone number', { cssClass: 'alert-danger', timeout: 3000 });
             return false;
         }
         // Register user
@@ -1132,7 +1153,8 @@ var ValidateService = (function () {
     function ValidateService() {
     }
     ValidateService.prototype.validateRegister = function (user) {
-        if (user.name == undefined || user.email == undefined || user.username == undefined || user.password == undefined) {
+        console.log('validateRegister user', user);
+        if (user.name == (false || undefined || "") || user.email == (false || undefined || "") || user.username == (false || undefined || "") || user.password == (false || undefined || "") || user.phone == (false || undefined || "")) {
             return false;
         }
         else {
@@ -1142,6 +1164,15 @@ var ValidateService = (function () {
     ValidateService.prototype.validateEmail = function (email) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
+    };
+    ValidateService.prototype.validatePhone = function (phone) {
+        var re = /^[0-9]{0,40}$/;
+        return re.test(phone);
+    };
+    ValidateService.prototype.validateTime = function (time) {
+        var re = /\b((1[0-2]|0?[1-9]):([0-5][0-9]) ([AaPp][Mm]))/;
+        console.log('Validate TIME', re.test(time));
+        return re.test(time);
     };
     return ValidateService;
 }());

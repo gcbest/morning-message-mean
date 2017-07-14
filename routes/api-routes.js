@@ -104,30 +104,25 @@ router.get('/sendsms', (req, res) => {
 
 // SMS will only be sent at the time the user specifies
 router.get('/timedsms', (req, res) => {
-    var timeStr = decodeURIComponent(req.query.time);
-    console.log(timeStr);
-
     var rule = new schedule.RecurrenceRule();
     rule.dayOfWeek = [new schedule.Range(1, 5)];
     rule.minute = parseInt(req.query.min);
     rule.hour = parseInt(req.query.hour);
 
-    console.log('rule', rule);
+    var unique_job_name = req.query.phone_num + req.query._id;
 
-    var unique_job_name = req.query.phone_number + req.query._id;
-
-    var j = schedule.scheduleJob(unique_job_name, rule, function () {
-            var MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=${api_keys.nexmoAPIKey}&api_secret=${api_keys.nexmoAPISecret}&to=${req.query.phone_num}&from=12035338496&text=${req.query.text}`;
-            console.log('nexmo: ', MESSAGING_API_URL);
-            axios.get(MESSAGING_API_URL).then(function (response) {
-                // res.send(stringify(response.status, null, 2));
-            }, function (rejection) {
-                console.log(rejection);
-                return;
-            }).catch(function (err) {
-                console.log(err)
-            });
+    schedule.scheduleJob(unique_job_name, rule, function () {
+        var MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=${api_keys.nexmoAPIKey}&api_secret=${api_keys.nexmoAPISecret}&to=${req.query.phone_num}&from=12035338496&text=${req.query.text}`;
+        console.log('nexmo: ', MESSAGING_API_URL);
+        axios.get(MESSAGING_API_URL).then(function (response) {
+            // res.send(stringify(response.status, null, 2));
+        }, function (rejection) {
+            console.log(rejection);
+            return;
+        }).catch(function (err) {
+            console.log(err)
         });
+    });
 
     User.getUserById(req.query._id, (err, user) => {
         console.log(user);

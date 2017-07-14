@@ -1,6 +1,7 @@
 <div class="row">
   <div class="col-sm-12">
-    <h2 class="page-header">Welcome to your Dashboard</h2>
+    <h2 *ngIf="client">Hi, {{ client.name }}</h2>
+    <h3 class="page-header">Welcome to your Dashboard</h3>
     <h4>Select the information you would like to receive</h4>
     <div class="row">
           <div class="col-sm-12 col-md-6" >
@@ -44,6 +45,7 @@
                 <input type="text" [(ngModel)]="workAddress" name="workAddress" class="form-control">
               </div>
 
+            <flash-messages></flash-messages>
             <div class="form-group">
               <label>What time would you like your message sent?</label>
               <input type="text" [(ngModel)]="msgTime" name="msgTime" class="form-control" placeholder="hh:mm am">

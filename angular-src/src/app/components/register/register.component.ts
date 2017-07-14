@@ -14,6 +14,7 @@ export class RegisterComponent implements OnInit {
   username: String;
   email: String;
   password: String;
+  phone: String;
 
   constructor(
     private validateService: ValidateService,
@@ -30,18 +31,27 @@ export class RegisterComponent implements OnInit {
       name: this.name,
       username: this.username,
       email: this.email,
-      password: this.password
+      phone: this.phone,
+      password: this.password,
+      settings: {},
+      jobName: ""
     };
 
     // Required fields
     if (!this.validateService.validateRegister(user)) {
-      this.flashMessage.show('Fill out all fields', {cssClass: 'alert-danger', timeout: 3000});
+      this.flashMessage.show('Please fill out all fields', {cssClass: 'alert-danger', timeout: 3000});
       return false;
     }
 
     // Validate email
     if (!this.validateService.validateEmail(user.email)) {
-      this.flashMessage.show('Use valid email', {cssClass: 'alert-danger', timeout: 3000});
+      this.flashMessage.show('Please use valid email', {cssClass: 'alert-danger', timeout: 3000});
+      return false;
+    }
+
+    // Validate phone
+    if (!this.validateService.validatePhone(user.phone)) {
+      this.flashMessage.show('Please use valid phone number', {cssClass: 'alert-danger', timeout: 3000});
       return false;
     }
 

@@ -9,9 +9,11 @@ const User = require('../models/users');
 router.post('/register', (req, res) => {
   let newUser = new User({
     name: req.body.name,
+    phone: req.body.phone,
     email: req.body.email,
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
+    settings: {"blank": ""}
   });
 
   User.addUser(newUser, (err, user) => {
@@ -51,7 +53,8 @@ router.post('/authenticate', (req, res) => {
             id: user._id,
             name: user.name,
             username: user.username,
-            email: user.email
+            email: user.email,
+            phone: user.phone
           }
         });
       } else {
@@ -76,7 +79,7 @@ router.get('/settings', (req, res) => {
 
 // Add Message Topics
 router.post('/settings', (req, res) => {
-  console.log(req.body);
+  console.log('POST /SETTINGS',req.body);
   User.getUserById(req.body._id, (err, user) => {
     console.log('POST /SETTINGS user', user);
     if (user.settings) {
