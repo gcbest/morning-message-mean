@@ -58,15 +58,6 @@ router.get('/quote', (req,res) => {
         // get it from the API, add it to the database, and send it to client
        if (todaysQuote.length < 1) {
 
-           // Quote.checkTomorrowsQuote((err, quoteFound) => {
-           //     if (err) {
-           //         console.error(err);
-           //     }
-           //
-           //     if (quoteFound.length < 1) {
-           //
-           //     }
-           // });
            axios.get(QUOTES_URL).then(function(response) {
                console.log('HAD TO CALL QUOTES API');
                // res.json(response.data.contents.quotes);

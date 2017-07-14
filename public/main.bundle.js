@@ -167,7 +167,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "", ""]);
+exports.push([module.i, "img {\n  width: 100%;\n}\n", ""]);
 
 // exports
 
@@ -180,7 +180,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2 class=\"page-header\">Welcome to your Dashboard</h2>\n<p>Welcome Friend!</p>\n<form (submit)=\"onMsgSubmit()\">\n  <div class=\"form-group\">\n    <label>Weather</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control\">\n    <input type=\"text\" [(ngModel)]=\"zipCode\" name=\"zipCode\" class=\"form-control\" placeholder=\"Address or Zip Code\">\n  </div>\n  <div class=\"form-group\">\n    <label>Quote of the Day</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasQuote\" name=\"hasQuote\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>News</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control\">\n  </div>\n  <select [(ngModel)]=\"newsSource\" name=\"newsSource\" (ngModelChange)=\"onNewsChange($event)\">\n    <option>CNN</option>\n    <option>Google News</option>\n    <option>The New York Times</option>\n  </select>\n  <div class=\"form-group\">\n    <label>Travel Time</label>\n    <input type=\"checkbox\" [(ngModel)]=\"hasTravel\" name=\"hasTravel\" class=\"form-control\">\n  </div>\n  <div class=\"form-group\">\n    <label>Home Address</label>\n    <input type=\"text\" [(ngModel)]=\"homeAddress\" name=\"homeAddress\" class=\"form-control\">\n  </div><div class=\"form-group\">\n  <label>Work Address</label>\n  <input type=\"text\" [(ngModel)]=\"workAddress\" name=\"workAddress\" class=\"form-control\">\n</div>\n  <div class=\"form-group\">\n    <label>Time to Send Message</label>\n    <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n  </div>\n  <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n  <input type=\"button\" (click)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n  <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-danger\">\n</form>\n\n"
+module.exports = "<div class=\"row\">\n  <div class=\"col s12\">\n    <h2 class=\"page-header\">Welcome to your Dashboard</h2>\n    <p>Welcome Friend!</p>\n    <form (submit)=\"onMsgSubmit()\">\n      <img (click)=\"toggleWeather()\" src=\"https://maxcdn.icons8.com/Share/icon/Weather//partly_cloudy_day_filled1600.png\" alt=\"Weather\">\n      <div *ngIf=\"hasWeather\" class=\"form-group\">\n        <label>Weather</label>\n        <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control hide\">\n        <input type=\"text\" [(ngModel)]=\"zipCode\" name=\"zipCode\" class=\"form-control\" placeholder=\"Enter Address or Zip Code\">\n      </div>\n      <img (click)=\"toggleQuote()\" src=\"https://image.freepik.com/free-icon/conversation-mark-interface-symbol-of-circular-speech-bubble-with-quotes-signs-inside_318-56572.jpg\" alt=\"Quote\">\n      <div *ngIf=\"hasQuote\" class=\"form-group\">\n        <label>Quote of the Day</label>\n        <input type=\"checkbox\" [(ngModel)]=\"hasQuote\" name=\"hasQuote\" class=\"form-control hide\">\n      </div>\n      <img (click)=\"toggleNews()\" src=\"http://ckecommunity.com/wp-content/uploads/2015/07/7_MTUtMDYtMTUtbmV3cy0x.jpg\" alt=\"News\" style=\"width: 100%\">\n      <div *ngIf=\"hasNews\" class=\"form-group\">\n        <label>News</label>\n        <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control hide\">\n        <select [(ngModel)]=\"newsSource\" name=\"newsSource\" (ngModelChange)=\"onNewsChange($event)\">\n          <option>CNN</option>\n          <option>Google News</option>\n          <option>The New York Times</option>\n        </select>\n      </div>\n      <img (click)=\"toggleTravel()\" src=\"https://image.flaticon.com/icons/svg/55/55172.svg\" alt=\"Travel\">\n      <div *ngIf=\"hasTravel\" class=\"form-group\">\n        <label>Travel Time</label>\n        <input type=\"checkbox\" [(ngModel)]=\"hasTravel\" name=\"hasTravel\" class=\"form-control hide\">\n        <label>Home Address</label>\n        <input type=\"text\" [(ngModel)]=\"homeAddress\" name=\"homeAddress\" class=\"form-control\">\n        <label>Work Address</label>\n        <input type=\"text\" [(ngModel)]=\"workAddress\" name=\"workAddress\" class=\"form-control\">\n      </div>\n      <div class=\"form-group\">\n        <label>Time to Send Message</label>\n        <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n      </div>\n      <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n      <input type=\"button\" (click)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n      <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-danger\">\n    </form>\n\n\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -242,6 +242,18 @@ var DashboardComponent = (function () {
     };
     DashboardComponent.prototype.onNewsChange = function (source) {
         this.newsSource = source;
+    };
+    DashboardComponent.prototype.toggleWeather = function () {
+        return this.hasWeather = !this.hasWeather;
+    };
+    DashboardComponent.prototype.toggleQuote = function () {
+        return this.hasQuote = !this.hasQuote;
+    };
+    DashboardComponent.prototype.toggleNews = function () {
+        return this.hasNews = !this.hasNews;
+    };
+    DashboardComponent.prototype.toggleTravel = function (bool) {
+        return this.hasTravel = !this.hasTravel;
     };
     DashboardComponent.prototype.setUserSelections = function () {
         var _this = this;

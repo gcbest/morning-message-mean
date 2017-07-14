@@ -59,6 +59,22 @@ export class DashboardComponent implements OnInit {
     this.newsSource = source;
   }
 
+  toggleWeather() {
+    return this.hasWeather = !this.hasWeather;
+  }
+
+  toggleQuote() {
+    return this.hasQuote = !this.hasQuote;
+  }
+
+  toggleNews() {
+    return this.hasNews = !this.hasNews;
+  }
+
+  toggleTravel(bool) {
+    return this.hasTravel = !this.hasTravel;
+  }
+
   setUserSelections() {
     // User selections
     var user = {

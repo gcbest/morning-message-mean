@@ -1,41 +1,47 @@
-<h2 class="page-header">Welcome to your Dashboard</h2>
-<p>Welcome Friend!</p>
-<form (submit)="onMsgSubmit()">
-  <div class="form-group">
-    <label>Weather</label>
-    <input type="checkbox" [(ngModel)]="hasWeather" name="hasWeather" class="form-control">
-    <input type="text" [(ngModel)]="zipCode" name="zipCode" class="form-control" placeholder="Address or Zip Code">
-  </div>
-  <div class="form-group">
-    <label>Quote of the Day</label>
-    <input type="checkbox" [(ngModel)]="hasQuote" name="hasQuote" class="form-control">
-  </div>
-  <div class="form-group">
-    <label>News</label>
-    <input type="checkbox" [(ngModel)]="hasNews" name="hasNews" class="form-control">
-  </div>
-  <select [(ngModel)]="newsSource" name="newsSource" (ngModelChange)="onNewsChange($event)">
-    <option>CNN</option>
-    <option>Google News</option>
-    <option>The New York Times</option>
-  </select>
-  <div class="form-group">
-    <label>Travel Time</label>
-    <input type="checkbox" [(ngModel)]="hasTravel" name="hasTravel" class="form-control">
-  </div>
-  <div class="form-group">
-    <label>Home Address</label>
-    <input type="text" [(ngModel)]="homeAddress" name="homeAddress" class="form-control">
-  </div><div class="form-group">
-  <label>Work Address</label>
-  <input type="text" [(ngModel)]="workAddress" name="workAddress" class="form-control">
-</div>
-  <div class="form-group">
-    <label>Time to Send Message</label>
-    <input type="text" [(ngModel)]="msgTime" name="msgTime" class="form-control" placeholder="hh:mm am">
-  </div>
-  <input type="submit" value="Submit" class="btn btn-primary">
-  <input type="button" (click)="setMsgTime()" value="Send a Test Message" class="btn btn-success">
-  <input type="button" (click)="stopMsgs()" value="Cancel Messages" class="btn btn-danger">
-</form>
+<div class="row">
+  <div class="col s12">
+    <h2 class="page-header">Welcome to your Dashboard</h2>
+    <p>Welcome Friend!</p>
+    <form (submit)="onMsgSubmit()">
+      <img (click)="toggleWeather()" src="https://maxcdn.icons8.com/Share/icon/Weather//partly_cloudy_day_filled1600.png" alt="Weather">
+      <div *ngIf="hasWeather" class="form-group">
+        <label>Weather</label>
+        <input type="checkbox" [(ngModel)]="hasWeather" name="hasWeather" class="form-control hide">
+        <input type="text" [(ngModel)]="zipCode" name="zipCode" class="form-control" placeholder="Enter Address or Zip Code">
+      </div>
+      <img (click)="toggleQuote()" src="https://image.freepik.com/free-icon/conversation-mark-interface-symbol-of-circular-speech-bubble-with-quotes-signs-inside_318-56572.jpg" alt="Quote">
+      <div *ngIf="hasQuote" class="form-group">
+        <label>Quote of the Day</label>
+        <input type="checkbox" [(ngModel)]="hasQuote" name="hasQuote" class="form-control hide">
+      </div>
+      <img (click)="toggleNews()" src="http://ckecommunity.com/wp-content/uploads/2015/07/7_MTUtMDYtMTUtbmV3cy0x.jpg" alt="News" style="width: 100%">
+      <div *ngIf="hasNews" class="form-group">
+        <label>News</label>
+        <input type="checkbox" [(ngModel)]="hasNews" name="hasNews" class="form-control hide">
+        <select [(ngModel)]="newsSource" name="newsSource" (ngModelChange)="onNewsChange($event)">
+          <option>CNN</option>
+          <option>Google News</option>
+          <option>The New York Times</option>
+        </select>
+      </div>
+      <img (click)="toggleTravel()" src="https://image.flaticon.com/icons/svg/55/55172.svg" alt="Travel">
+      <div *ngIf="hasTravel" class="form-group">
+        <label>Travel Time</label>
+        <input type="checkbox" [(ngModel)]="hasTravel" name="hasTravel" class="form-control hide">
+        <label>Home Address</label>
+        <input type="text" [(ngModel)]="homeAddress" name="homeAddress" class="form-control">
+        <label>Work Address</label>
+        <input type="text" [(ngModel)]="workAddress" name="workAddress" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Time to Send Message</label>
+        <input type="text" [(ngModel)]="msgTime" name="msgTime" class="form-control" placeholder="hh:mm am">
+      </div>
+      <input type="submit" value="Submit" class="btn btn-primary">
+      <input type="button" (click)="setMsgTime()" value="Send a Test Message" class="btn btn-success">
+      <input type="button" (click)="stopMsgs()" value="Cancel Messages" class="btn btn-danger">
+    </form>
 
+
+  </div>
+</div>
