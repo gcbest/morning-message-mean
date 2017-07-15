@@ -1,8 +1,10 @@
-img {
-  width: 100%;
-  background: transparent;
+.icon {
   -webkit-filter: opacity(.2);
   filter: opacity(.2);
+}
+
+img {
+  width: 100%;
 }
 
 .chosen {
@@ -10,17 +12,7 @@ img {
   filter: opacity(1);
 }
 
+h3 {
+  text-align: center;
+}
 
-.row-eq-height{
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  margin: 0;
-}
-.row-eq-height [class*="col-"]{
-  padding: 0;
-}
-.row-eq-height img{
-  width: 100%;
-}

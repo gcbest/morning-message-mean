@@ -34,7 +34,11 @@ export class DashboardComponent implements OnInit {
   // User object
   client;
 
-
+  iconsPath: String = '../../../assets/images/';
+  weatherIcon: String = this.iconsPath + 'weather_icon.png';
+  quoteIcon: String = this.iconsPath + 'quote_icon.jpg';
+  newsIcon: String = this.iconsPath + 'news_icon.jpg';
+  travelIcon:  String = this.iconsPath + 'travel_icon.svg';
 
   constructor(
     private apiCallService: APICallService,
