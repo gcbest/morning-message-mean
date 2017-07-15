@@ -95,8 +95,6 @@ export class DashboardComponent implements OnInit {
   }
 
   setUserSelections() {
-    // if(!this.validateInputs()) return;
-
     // User selections
     var user = {
       _id: this._id,
@@ -217,12 +215,19 @@ export class DashboardComponent implements OnInit {
   }
 
   // Resolve all the promises for the user's selections and send SMS
-  sendTextMessage(promiseArr) {
+  sendMessageNow() {
+    var promiseArr = this.setUserSelections();
     console.log('PROMISE ARR', promiseArr);
     Promise.all(promiseArr).then((results) => {
       console.log('results ', results);
       var formattedURL =  encodeURIComponent(results.join('\n \n'));
-      this.apiCallService.sendSMS('19734946092', formattedURL);
+      var phone = this.client.phone;
+      if (!this.validateInputs()) {
+        console.log("INVALUD")
+        return;
+      }
+      this.apiCallService.sendSMS(phone, formattedURL);
+      this.flashMessage.show('Message sent', {cssClass: 'alert-success', timeout: 3000});
     }).catch( err => {
       console.log(err);
     });
@@ -269,7 +274,14 @@ export class DashboardComponent implements OnInit {
         return false;
       }
     }
+
+    return true;
+  }
+
+  validateInputsWithTime() {
+    if (!this.validateInputs()) return false;
     // Validate user's time input
+    console.log('reaching the validate time service')
     if (this.validateService.validateTime(this.msgTime)) {
       this.flashMessage.show('Message settings saved', {cssClass: 'alert-success', timeout: 3000});
       return true;
@@ -277,10 +289,9 @@ export class DashboardComponent implements OnInit {
       this.flashMessage.show('Please use valid time format', {cssClass: 'alert-danger', timeout: 3000});
       return false;
     }
-
   }
 
-  sendMessage() {
+  sendDailyMessage() {
     // Grab the user's input
     var hour = parseInt(this.msgTime.slice(0, 2));
     var minute = parseInt(this.msgTime.slice(3, 5));
@@ -322,8 +333,8 @@ export class DashboardComponent implements OnInit {
 
   onMsgSubmit() {
 
-    if (this.validateInputs()) {
-      this.sendMessage();
+    if (this.validateInputsWithTime()) {
+      this.sendDailyMessage();
     }
   }
 

@@ -180,7 +180,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"row\">\n  <div class=\"col-sm-12\">\n    <h2 *ngIf=\"client\">Hi, {{ client.name }}</h2>\n    <h3 class=\"page-header\">Welcome to your Dashboard</h3>\n    <h4>1. Select the icons for the information you would like to receive</h4>\n    <h4>2. Scroll to the bottom of the page to complete the form</h4>\n    <div class=\"row\">\n          <div class=\"col-sm-12 col-md-6 icon\" [class.chosen]=\"hasWeather\">\n            <h3>Weather</h3>\n            <img (click)=\"toggleWeather()\" [src]=\"weatherIcon\" alt=\"Weather\">\n          </div>\n          <div class=\"col-sm-12 col-md-6 icon\" [class.chosen]=\"hasQuote\">\n            <h3>Quote of the Day</h3>\n            <img (click)=\"toggleQuote()\" [src]=\"quoteIcon\" alt=\"Quote\">\n          </div>\n          <div class=\"col-sm-12 col-md-6 icon\" [class.chosen]=\"hasNews\">\n            <h3>News Headlines</h3>\n            <img (click)=\"toggleNews()\" [src]=\"newsIcon\" alt=\"News\">\n          </div>\n          <div class=\"col-sm-12 col-md-6 icon\" [class.chosen]=\"hasTravel\">\n            <h3>Travel Time to Work</h3>\n            <img (click)=\"toggleTravel()\" [src]=\"travelIcon\" alt=\"Travel\">\n          </div>\n\n          <div class=\"col-sm-12\" *ngIf=\"displayForm()\">\n            <h3 class=\"page-header\">Information Needed</h3>\n            <form (submit)=\"onMsgSubmit()\">\n              <div *ngIf=\"hasWeather\" class=\"form-group\">\n                <h4>Weather</h4>\n                <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control hide\">\n                <input type=\"text\" [(ngModel)]=\"zipCode\" name=\"zipCode\" class=\"form-control\" placeholder=\"Enter Address or Zip Code\">\n              </div>\n              <div class=\"form-group\">\n                <input type=\"checkbox\" [(ngModel)]=\"hasQuote\" name=\"hasQuote\" class=\"form-control hide\">\n              </div>\n              <div *ngIf=\"hasNews\" class=\"form-group\">\n                <h4>News</h4>\n                <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control hide\">\n                <select [(ngModel)]=\"newsSource\" name=\"newsSource\" (ngModelChange)=\"onNewsChange($event)\">\n                  <option>CNN</option>\n                  <option>Google News</option>\n                  <option>The New York Times</option>\n                </select>\n              </div>\n              <div *ngIf=\"hasTravel\" class=\"form-group\">\n                <h4>Travel Time</h4>\n                <input type=\"checkbox\" [(ngModel)]=\"hasTravel\" name=\"hasTravel\" class=\"form-control hide\">\n                <label>Home Address</label>\n                <input type=\"text\" [(ngModel)]=\"homeAddress\" name=\"homeAddress\" class=\"form-control\">\n                <label>Work Address</label>\n                <input type=\"text\" [(ngModel)]=\"workAddress\" name=\"workAddress\" class=\"form-control\">\n              </div>\n\n            <div class=\"form-group\">\n              <h4>What time would you like your message sent?</h4>\n              <flash-messages></flash-messages>\n              <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n            </div>\n\n              <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n            <input type=\"button\" (click)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n            <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-danger\">\n            </form>\n\n          </div>\n    </div>\n</div>\n</div>\n"
+module.exports = "<div class=\"row\">\n  <div class=\"col-sm-12\">\n    <h2 *ngIf=\"client\">Hi, {{ client.name }}</h2>\n    <h3 class=\"page-header\">Welcome to your Dashboard</h3>\n    <h4>1. Select the icons for the information you would like to receive</h4>\n    <h4>2. Scroll to the bottom of the page to complete the form</h4>\n    <h4>(Messages are sent once a day at the specified time)</h4>\n    <div class=\"row\">\n          <div class=\"col-sm-12 col-md-6 icon\" [class.chosen]=\"hasWeather\">\n            <h3>Weather</h3>\n            <img (click)=\"toggleWeather()\" [src]=\"weatherIcon\" alt=\"Weather\">\n          </div>\n          <div class=\"col-sm-12 col-md-6 icon\" [class.chosen]=\"hasQuote\">\n            <h3>Quote of the Day</h3>\n            <img (click)=\"toggleQuote()\" [src]=\"quoteIcon\" alt=\"Quote\">\n          </div>\n          <div class=\"col-sm-12 col-md-6 icon\" [class.chosen]=\"hasNews\">\n            <h3>News Headlines</h3>\n            <img (click)=\"toggleNews()\" [src]=\"newsIcon\" alt=\"News\">\n          </div>\n          <div class=\"col-sm-12 col-md-6 icon\" [class.chosen]=\"hasTravel\">\n            <h3>Travel Time to Work</h3>\n            <img (click)=\"toggleTravel()\" [src]=\"travelIcon\" alt=\"Travel\">\n          </div>\n\n          <div class=\"col-sm-12\" *ngIf=\"displayForm()\">\n            <h3 class=\"page-header\">Information Needed</h3>\n            <form (submit)=\"onMsgSubmit()\">\n              <div *ngIf=\"hasWeather\" class=\"form-group\">\n                <h4>Weather</h4>\n                <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control hide\">\n                <input type=\"text\" [(ngModel)]=\"zipCode\" name=\"zipCode\" class=\"form-control\" placeholder=\"Enter Address or Zip Code\">\n              </div>\n              <div class=\"form-group\">\n                <input type=\"checkbox\" [(ngModel)]=\"hasQuote\" name=\"hasQuote\" class=\"form-control hide\">\n              </div>\n              <div *ngIf=\"hasNews\" class=\"form-group\">\n                <h4>News</h4>\n                <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control hide\">\n                <select [(ngModel)]=\"newsSource\" name=\"newsSource\" (ngModelChange)=\"onNewsChange($event)\">\n                  <option>CNN</option>\n                  <option>Google News</option>\n                  <option>The New York Times</option>\n                </select>\n              </div>\n              <div *ngIf=\"hasTravel\" class=\"form-group\">\n                <h4>Travel Time by car</h4>\n                <input type=\"checkbox\" [(ngModel)]=\"hasTravel\" name=\"hasTravel\" class=\"form-control hide\">\n                <label>Home Address</label>\n                <input type=\"text\" [(ngModel)]=\"homeAddress\" name=\"homeAddress\" class=\"form-control\">\n                <label>Work Address</label>\n                <input type=\"text\" [(ngModel)]=\"workAddress\" name=\"workAddress\" class=\"form-control\">\n              </div>\n\n            <div class=\"form-group\">\n              <h4>What time would you like your message sent?</h4>\n              <flash-messages></flash-messages>\n              <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n            </div>\n\n              <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n            <input type=\"button\" (click)=\"sendMessageNow()\" value=\"Send Sample Message Now\" class=\"btn btn-success\">\n            <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-danger\">\n            </form>\n\n          </div>\n    </div>\n</div>\n</div>\n"
 
 /***/ }),
 
@@ -277,7 +277,6 @@ var DashboardComponent = (function () {
         }
     };
     DashboardComponent.prototype.setUserSelections = function () {
-        // if(!this.validateInputs()) return;
         var _this = this;
         // User selections
         var user = {
@@ -388,13 +387,20 @@ var DashboardComponent = (function () {
         return promiseArr;
     };
     // Resolve all the promises for the user's selections and send SMS
-    DashboardComponent.prototype.sendTextMessage = function (promiseArr) {
+    DashboardComponent.prototype.sendMessageNow = function () {
         var _this = this;
+        var promiseArr = this.setUserSelections();
         console.log('PROMISE ARR', promiseArr);
         Promise.all(promiseArr).then(function (results) {
             console.log('results ', results);
             var formattedURL = encodeURIComponent(results.join('\n \n'));
-            _this.apiCallService.sendSMS('19734946092', formattedURL);
+            var phone = _this.client.phone;
+            if (!_this.validateInputs()) {
+                console.log("INVALUD");
+                return;
+            }
+            _this.apiCallService.sendSMS(phone, formattedURL);
+            _this.flashMessage.show('Message sent', { cssClass: 'alert-success', timeout: 3000 });
         }).catch(function (err) {
             console.log(err);
         });
@@ -434,7 +440,13 @@ var DashboardComponent = (function () {
                 return false;
             }
         }
+        return true;
+    };
+    DashboardComponent.prototype.validateInputsWithTime = function () {
+        if (!this.validateInputs())
+            return false;
         // Validate user's time input
+        console.log('reaching the validate time service');
         if (this.validateService.validateTime(this.msgTime)) {
             this.flashMessage.show('Message settings saved', { cssClass: 'alert-success', timeout: 3000 });
             return true;
@@ -444,7 +456,7 @@ var DashboardComponent = (function () {
             return false;
         }
     };
-    DashboardComponent.prototype.sendMessage = function () {
+    DashboardComponent.prototype.sendDailyMessage = function () {
         var _this = this;
         // Grab the user's input
         var hour = parseInt(this.msgTime.slice(0, 2));
@@ -481,8 +493,8 @@ var DashboardComponent = (function () {
     //   });
     // }
     DashboardComponent.prototype.onMsgSubmit = function () {
-        if (this.validateInputs()) {
-            this.sendMessage();
+        if (this.validateInputsWithTime()) {
+            this.sendDailyMessage();
         }
     };
     return DashboardComponent;

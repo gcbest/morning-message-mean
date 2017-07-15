@@ -7,8 +7,6 @@ const Quote = require('../models/quotes');
 
 const schedule = require('node-schedule');
 
-
-
 const api_keys = require('../config/api');
 
 router.get('/weather', (req, res) => {
@@ -105,7 +103,7 @@ router.get('/sendsms', (req, res) => {
 // SMS will only be sent at the time the user specifies
 router.get('/timedsms', (req, res) => {
     var rule = new schedule.RecurrenceRule();
-    rule.dayOfWeek = [new schedule.Range(1, 5)];
+    rule.dayOfWeek = [new schedule.Range(0, 6)];
     rule.minute = parseInt(req.query.min);
     rule.hour = parseInt(req.query.hour);
 
