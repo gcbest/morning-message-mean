@@ -428,7 +428,7 @@ var DashboardComponent = (function () {
         }
         // Validate news input
         if (this.hasTravel) {
-            if (!this.validateService.validateAlphaNumeric(this.homeAddress) && !this.validateService.validateAlphaNumeric(this.workAddress)) {
+            if (!this.validateService.validateAlphaNumeric(this.homeAddress) || !this.validateService.validateAlphaNumeric(this.workAddress)) {
                 this.flashMessage.show('Please use valid addresses for the travel time inputs', { cssClass: 'alert-danger', timeout: 3000 });
                 return false;
             }
