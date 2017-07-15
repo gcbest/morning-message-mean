@@ -26,7 +26,13 @@ export class ValidateService {
 
   validateTime(time) {
     const re = /\b((1[0-2]|0?[1-9]):([0-5][0-9]) ([AaPp][Mm]))/;
-    console.log('Validate TIME', re.test(time));
     return re.test(time);
+  }
+
+  validateAlphaNumeric(input) {
+    const re = /^[a-zA-Z0-9_',\-#\/ ]*$/;
+    console.log('VALIDATE ALPHANUM', re.test(input.trim()));
+    console.log('input.trim() ', input.trim());
+    return re.test(input.trim()) && (input.trim().length > 0);
   }
 }

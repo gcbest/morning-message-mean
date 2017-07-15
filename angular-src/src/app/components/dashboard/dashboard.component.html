@@ -18,9 +18,10 @@
           </div>
 
           <div class="col-sm-12" *ngIf="displayForm()">
+            <h3 class="page-header">Information Needed</h3>
             <form (submit)="onMsgSubmit()">
               <div *ngIf="hasWeather" class="form-group">
-                <label>Weather</label>
+                <h4>Weather</h4>
                 <input type="checkbox" [(ngModel)]="hasWeather" name="hasWeather" class="form-control hide">
                 <input type="text" [(ngModel)]="zipCode" name="zipCode" class="form-control" placeholder="Enter Address or Zip Code">
               </div>
@@ -28,7 +29,7 @@
                 <input type="checkbox" [(ngModel)]="hasQuote" name="hasQuote" class="form-control hide">
               </div>
               <div *ngIf="hasNews" class="form-group">
-                <label>News</label>
+                <h4>News</h4>
                 <input type="checkbox" [(ngModel)]="hasNews" name="hasNews" class="form-control hide">
                 <select [(ngModel)]="newsSource" name="newsSource" (ngModelChange)="onNewsChange($event)">
                   <option>CNN</option>
@@ -37,7 +38,7 @@
                 </select>
               </div>
               <div *ngIf="hasTravel" class="form-group">
-                <label>Travel Time</label>
+                <h4>Travel Time</h4>
                 <input type="checkbox" [(ngModel)]="hasTravel" name="hasTravel" class="form-control hide">
                 <label>Home Address</label>
                 <input type="text" [(ngModel)]="homeAddress" name="homeAddress" class="form-control">
@@ -45,12 +46,13 @@
                 <input type="text" [(ngModel)]="workAddress" name="workAddress" class="form-control">
               </div>
 
-            <flash-messages></flash-messages>
             <div class="form-group">
-              <label>What time would you like your message sent?</label>
+              <h4>What time would you like your message sent?</h4>
+              <flash-messages></flash-messages>
               <input type="text" [(ngModel)]="msgTime" name="msgTime" class="form-control" placeholder="hh:mm am">
             </div>
-            <input type="submit" value="Submit" class="btn btn-primary">
+
+              <input type="submit" value="Submit" class="btn btn-primary">
             <input type="button" (click)="setMsgTime()" value="Send a Test Message" class="btn btn-success">
             <input type="button" (click)="stopMsgs()" value="Cancel Messages" class="btn btn-danger">
             </form>

@@ -12,8 +12,6 @@ import {ValidateService} from '../../services/validate.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  client;
-
   // User Boolean Inputs
   hasWeather: Boolean = false;
   hasNews: Boolean = false;
@@ -22,7 +20,7 @@ export class DashboardComponent implements OnInit {
   isActive: Boolean = false;
 
   // User String Inputs
-  newsSource = 'CNN';
+  newsSource = "";
   homeAddress: String;
   workAddress: String;
   zipCode: String;
@@ -33,7 +31,9 @@ export class DashboardComponent implements OnInit {
 
   // User's mongodb id
   _id: String = localStorage.user.split('"')[3];
-  // User's phone number
+  // User object
+  client;
+
 
 
   constructor(
@@ -91,6 +91,8 @@ export class DashboardComponent implements OnInit {
   }
 
   setUserSelections() {
+    // if(!this.validateInputs()) return;
+
     // User selections
     var user = {
       _id: this._id,
@@ -110,6 +112,8 @@ export class DashboardComponent implements OnInit {
       workAddress: this.workAddress,
       msgTime: this.msgTime
     };
+
+
 
     // Add promises to promise array
     var promiseArr = [];
@@ -149,7 +153,6 @@ export class DashboardComponent implements OnInit {
             if (userSelections[property] === true) {
               var quotePromise = new Promise((resolve, reject) => {
                 this.apiCallService.getQuote().then(quoteInfo => {
-                  debugger;
                   console.log('Quote before encoding', quoteInfo);
                   var formattedQuote = quoteInfo.quote + '\n -' + quoteInfo.author;
                   console.log('formattedQuote', formattedQuote);
@@ -183,8 +186,11 @@ export class DashboardComponent implements OnInit {
                   for(var i = 0; i < 3; i++) {
                     headline += articlesArr[i].title + '\n' + articlesArr[i].url + '\n';
                   }
-                  console.log('headline before enocoding', headline);
-                  headline = encodeURIComponent(headline);
+                  // Convert left and right apostrophe's to regular apostrophes so they can be escaped
+                  var escapedHeadline = headline.replace(/\u2019/g, "'").replace(/\u2018/g, "'");
+
+                  console.log('headline before enocoding', escapedHeadline);
+                  headline = encodeURIComponent(escapedHeadline);
                   console.log('headline AFTER encoding', headline);
                   resolve(headline);
                 });
@@ -237,38 +243,87 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  validateInputs() {
+    // Validate weather input
+    if (this.hasWeather) {
+      if(!this.validateService.validateAlphaNumeric(this.zipCode)) {
+        this.flashMessage.show('Please use valid address/zip code for the weather input', {cssClass: 'alert-danger', timeout: 3000});
+        return false;
+      }
+    }
+    // Validate news input
+    if (this.hasTravel) {
+      if(!this.validateService.validateAlphaNumeric(this.homeAddress) && !this.validateService.validateAlphaNumeric(this.workAddress)) {
+        this.flashMessage.show('Please use valid addresses for the travel time inputs', {cssClass: 'alert-danger', timeout: 3000});
+        return false;
+      }
+    }
+    // Validate travel time input
+    if (this.hasNews) {
+      if(!this.validateService.validateAlphaNumeric(this.newsSource)) {
+        this.flashMessage.show('Please select a news source', {cssClass: 'alert-danger', timeout: 3000});
+        return false;
+      }
+    }
+    // Validate user's time input
+    if (this.validateService.validateTime(this.msgTime)) {
+      this.flashMessage.show('Message settings saved', {cssClass: 'alert-success', timeout: 3000});
+      return true;
+    } else {
+      this.flashMessage.show('Please use valid time format', {cssClass: 'alert-danger', timeout: 3000});
+      return false;
+    }
+
+  }
+
+  sendMessage() {
+    // Grab the user's input
+    var hour = parseInt(this.msgTime.slice(0, 2));
+    var minute = parseInt(this.msgTime.slice(3, 5));
+    var ampm = this.msgTime.slice(6, 8).toLowerCase();
+
+    // Convert it a time cron can use
+    if(ampm == "pm" && hour<12) hour = hour+12;
+    if(ampm == "am" && hour==12) hour = hour-12;
+
+    var timeObj = {
+      hour: hour,
+      min: minute
+    };
+
+    var promiseArr = this.setUserSelections();
+    Promise.all(promiseArr).then((results) => {
+      const formattedURL =  encodeURIComponent(results.join('\n \n'));
+      const phone = this.client.phone;
+
+      console.log('this.client.phone', this.client.phone);
+      this.apiCallService.setTimedSMS(this.client.phone, formattedURL, timeObj, this._id);
+    }).catch( err => {
+      console.log(err);
+    });
+  }
+
+  // sendMessage2(promArr) {
+  //   Promise.all(promiseArr).then((results) => {
+  //     const formattedURL =  encodeURIComponent(results.join('\n \n'));
+  //     const phone = this.client.phone;
+  //
+  //     console.log('this.client.phone', this.client.phone);
+  //     this.apiCallService.setTimedSMS(this.client.phone, formattedURL, timeObj, this._id);
+  //   }).catch( err => {
+  //     console.log(err);
+  //   });
+  // }
 
 
   onMsgSubmit() {
-    // Validate user's time input
-    // if (this.validateService.validateTime(this.msgTime)) {
-      // Grab the user's input
-      var hour = parseInt(this.msgTime.slice(0, 2));
-      var minute = parseInt(this.msgTime.slice(3, 5));
-      var ampm = this.msgTime.slice(6, 8).toLowerCase();
 
-      // Convert it a time cron can use
-      if(ampm == "pm" && hour<12) hour = hour+12;
-      if(ampm == "am" && hour==12) hour = hour-12;
+    if (this.validateInputs()) {
+      this.sendMessage();
+    }
+  }
 
-      var timeObj = {
-        hour: hour,
-        min: minute
-      };
 
-      var promiseArr = this.setUserSelections();
-      Promise.all(promiseArr).then((results) => {
-        const formattedURL =  encodeURIComponent(results.join('\n \n'));
-        const phone = this.client.phone;
-
-        console.log('this.client.phone', this.client.phone);
-        this.apiCallService.setTimedSMS(this.client.phone, formattedURL, timeObj, this._id);
-      }).catch( err => {
-        console.log(err);
-      });
-    // } else {
-    //   return this.flashMessage.show('Please use valid time format', {cssClass: 'alert-danger', timeout: 3000});
-    // }
 
 
 
@@ -293,12 +348,6 @@ export class DashboardComponent implements OnInit {
     //   })
     //   .then((message) => console.log(message.sid));
 
-  }
-
-  onMsgSelectionSubmit() {
-    // Set the time when the message will be sent
-
-  }
 
 }
 

@@ -180,7 +180,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"row\">\n  <div class=\"col-sm-12\">\n    <h2 *ngIf=\"client\">Hi, {{ client.name }}</h2>\n    <h3 class=\"page-header\">Welcome to your Dashboard</h3>\n    <h4>Select the information you would like to receive</h4>\n    <div class=\"row\">\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleWeather()\" [class.chosen]=\"hasWeather\" src=\"https://maxcdn.icons8.com/Share/icon/Weather//partly_cloudy_day_filled1600.png\" alt=\"Weather\">\n          </div>\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleQuote()\" [class.chosen]=\"hasQuote\" src=\"https://image.freepik.com/free-icon/conversation-mark-interface-symbol-of-circular-speech-bubble-with-quotes-signs-inside_318-56572.jpg\" alt=\"Quote\">\n          </div>\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleNews()\" [class.chosen]=\"hasNews\" src=\"http://ckecommunity.com/wp-content/uploads/2015/07/7_MTUtMDYtMTUtbmV3cy0x.jpg\" alt=\"News\">\n          </div>\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleTravel()\" [class.chosen]=\"hasTravel\" src=\"https://image.flaticon.com/icons/svg/55/55172.svg\" alt=\"Travel\">\n          </div>\n\n          <div class=\"col-sm-12\" *ngIf=\"displayForm()\">\n            <form (submit)=\"onMsgSubmit()\">\n              <div *ngIf=\"hasWeather\" class=\"form-group\">\n                <label>Weather</label>\n                <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control hide\">\n                <input type=\"text\" [(ngModel)]=\"zipCode\" name=\"zipCode\" class=\"form-control\" placeholder=\"Enter Address or Zip Code\">\n              </div>\n              <div class=\"form-group\">\n                <input type=\"checkbox\" [(ngModel)]=\"hasQuote\" name=\"hasQuote\" class=\"form-control hide\">\n              </div>\n              <div *ngIf=\"hasNews\" class=\"form-group\">\n                <label>News</label>\n                <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control hide\">\n                <select [(ngModel)]=\"newsSource\" name=\"newsSource\" (ngModelChange)=\"onNewsChange($event)\">\n                  <option>CNN</option>\n                  <option>Google News</option>\n                  <option>The New York Times</option>\n                </select>\n              </div>\n              <div *ngIf=\"hasTravel\" class=\"form-group\">\n                <label>Travel Time</label>\n                <input type=\"checkbox\" [(ngModel)]=\"hasTravel\" name=\"hasTravel\" class=\"form-control hide\">\n                <label>Home Address</label>\n                <input type=\"text\" [(ngModel)]=\"homeAddress\" name=\"homeAddress\" class=\"form-control\">\n                <label>Work Address</label>\n                <input type=\"text\" [(ngModel)]=\"workAddress\" name=\"workAddress\" class=\"form-control\">\n              </div>\n\n            <flash-messages></flash-messages>\n            <div class=\"form-group\">\n              <label>What time would you like your message sent?</label>\n              <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n            </div>\n            <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n            <input type=\"button\" (click)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n            <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-danger\">\n            </form>\n\n          </div>\n    </div>\n</div>\n</div>\n"
+module.exports = "<div class=\"row\">\n  <div class=\"col-sm-12\">\n    <h2 *ngIf=\"client\">Hi, {{ client.name }}</h2>\n    <h3 class=\"page-header\">Welcome to your Dashboard</h3>\n    <h4>Select the information you would like to receive</h4>\n    <div class=\"row\">\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleWeather()\" [class.chosen]=\"hasWeather\" src=\"https://maxcdn.icons8.com/Share/icon/Weather//partly_cloudy_day_filled1600.png\" alt=\"Weather\">\n          </div>\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleQuote()\" [class.chosen]=\"hasQuote\" src=\"https://image.freepik.com/free-icon/conversation-mark-interface-symbol-of-circular-speech-bubble-with-quotes-signs-inside_318-56572.jpg\" alt=\"Quote\">\n          </div>\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleNews()\" [class.chosen]=\"hasNews\" src=\"http://ckecommunity.com/wp-content/uploads/2015/07/7_MTUtMDYtMTUtbmV3cy0x.jpg\" alt=\"News\">\n          </div>\n          <div class=\"col-sm-12 col-md-6\" >\n            <img (click)=\"toggleTravel()\" [class.chosen]=\"hasTravel\" src=\"https://image.flaticon.com/icons/svg/55/55172.svg\" alt=\"Travel\">\n          </div>\n\n          <div class=\"col-sm-12\" *ngIf=\"displayForm()\">\n            <h3 class=\"page-header\">Information Needed</h3>\n            <form (submit)=\"onMsgSubmit()\">\n              <div *ngIf=\"hasWeather\" class=\"form-group\">\n                <h4>Weather</h4>\n                <input type=\"checkbox\" [(ngModel)]=\"hasWeather\" name=\"hasWeather\" class=\"form-control hide\">\n                <input type=\"text\" [(ngModel)]=\"zipCode\" name=\"zipCode\" class=\"form-control\" placeholder=\"Enter Address or Zip Code\">\n              </div>\n              <div class=\"form-group\">\n                <input type=\"checkbox\" [(ngModel)]=\"hasQuote\" name=\"hasQuote\" class=\"form-control hide\">\n              </div>\n              <div *ngIf=\"hasNews\" class=\"form-group\">\n                <h4>News</h4>\n                <input type=\"checkbox\" [(ngModel)]=\"hasNews\" name=\"hasNews\" class=\"form-control hide\">\n                <select [(ngModel)]=\"newsSource\" name=\"newsSource\" (ngModelChange)=\"onNewsChange($event)\">\n                  <option>CNN</option>\n                  <option>Google News</option>\n                  <option>The New York Times</option>\n                </select>\n              </div>\n              <div *ngIf=\"hasTravel\" class=\"form-group\">\n                <h4>Travel Time</h4>\n                <input type=\"checkbox\" [(ngModel)]=\"hasTravel\" name=\"hasTravel\" class=\"form-control hide\">\n                <label>Home Address</label>\n                <input type=\"text\" [(ngModel)]=\"homeAddress\" name=\"homeAddress\" class=\"form-control\">\n                <label>Work Address</label>\n                <input type=\"text\" [(ngModel)]=\"workAddress\" name=\"workAddress\" class=\"form-control\">\n              </div>\n\n            <div class=\"form-group\">\n              <h4>What time would you like your message sent?</h4>\n              <flash-messages></flash-messages>\n              <input type=\"text\" [(ngModel)]=\"msgTime\" name=\"msgTime\" class=\"form-control\" placeholder=\"hh:mm am\">\n            </div>\n\n              <input type=\"submit\" value=\"Submit\" class=\"btn btn-primary\">\n            <input type=\"button\" (click)=\"setMsgTime()\" value=\"Send a Test Message\" class=\"btn btn-success\">\n            <input type=\"button\" (click)=\"stopMsgs()\" value=\"Cancel Messages\" class=\"btn btn-danger\">\n            </form>\n\n          </div>\n    </div>\n</div>\n</div>\n"
 
 /***/ }),
 
@@ -213,7 +213,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var DashboardComponent = (function () {
-    // User's phone number
     function DashboardComponent(apiCallService, settingsService, validateService, flashMessage) {
         this.apiCallService = apiCallService;
         this.settingsService = settingsService;
@@ -226,7 +225,7 @@ var DashboardComponent = (function () {
         this.hasTravel = false;
         this.isActive = false;
         // User String Inputs
-        this.newsSource = 'CNN';
+        this.newsSource = "";
         // User's mongodb id
         this._id = localStorage.user.split('"')[3];
     }
@@ -273,6 +272,7 @@ var DashboardComponent = (function () {
         }
     };
     DashboardComponent.prototype.setUserSelections = function () {
+        // if(!this.validateInputs()) return;
         var _this = this;
         // User selections
         var user = {
@@ -329,7 +329,6 @@ var DashboardComponent = (function () {
                         if (userSelections[property] === true) {
                             var quotePromise = new Promise(function (resolve, reject) {
                                 _this.apiCallService.getQuote().then(function (quoteInfo) {
-                                    debugger;
                                     console.log('Quote before encoding', quoteInfo);
                                     var formattedQuote = quoteInfo.quote + '\n -' + quoteInfo.author;
                                     console.log('formattedQuote', formattedQuote);
@@ -360,8 +359,10 @@ var DashboardComponent = (function () {
                                     for (var i = 0; i < 3; i++) {
                                         headline += articlesArr[i].title + '\n' + articlesArr[i].url + '\n';
                                     }
-                                    console.log('headline before enocoding', headline);
-                                    headline = encodeURIComponent(headline);
+                                    // Convert left and right apostrophe's to regular apostrophes so they can be escaped
+                                    var escapedHeadline = headline.replace(/\u2019/g, "'").replace(/\u2018/g, "'");
+                                    console.log('headline before enocoding', escapedHeadline);
+                                    headline = encodeURIComponent(escapedHeadline);
                                     console.log('headline AFTER encoding', headline);
                                     resolve(headline);
                                 });
@@ -406,10 +407,40 @@ var DashboardComponent = (function () {
             }
         });
     };
-    DashboardComponent.prototype.onMsgSubmit = function () {
-        var _this = this;
+    DashboardComponent.prototype.validateInputs = function () {
+        // Validate weather input
+        if (this.hasWeather) {
+            if (!this.validateService.validateAlphaNumeric(this.zipCode)) {
+                this.flashMessage.show('Please use valid address/zip code for the weather input', { cssClass: 'alert-danger', timeout: 3000 });
+                return false;
+            }
+        }
+        // Validate news input
+        if (this.hasTravel) {
+            if (!this.validateService.validateAlphaNumeric(this.homeAddress) && !this.validateService.validateAlphaNumeric(this.workAddress)) {
+                this.flashMessage.show('Please use valid addresses for the travel time inputs', { cssClass: 'alert-danger', timeout: 3000 });
+                return false;
+            }
+        }
+        // Validate travel time input
+        if (this.hasNews) {
+            if (!this.validateService.validateAlphaNumeric(this.newsSource)) {
+                this.flashMessage.show('Please select a news source', { cssClass: 'alert-danger', timeout: 3000 });
+                return false;
+            }
+        }
         // Validate user's time input
-        // if (this.validateService.validateTime(this.msgTime)) {
+        if (this.validateService.validateTime(this.msgTime)) {
+            this.flashMessage.show('Message settings saved', { cssClass: 'alert-success', timeout: 3000 });
+            return true;
+        }
+        else {
+            this.flashMessage.show('Please use valid time format', { cssClass: 'alert-danger', timeout: 3000 });
+            return false;
+        }
+    };
+    DashboardComponent.prototype.sendMessage = function () {
+        var _this = this;
         // Grab the user's input
         var hour = parseInt(this.msgTime.slice(0, 2));
         var minute = parseInt(this.msgTime.slice(3, 5));
@@ -432,27 +463,22 @@ var DashboardComponent = (function () {
         }).catch(function (err) {
             console.log(err);
         });
-        // } else {
-        //   return this.flashMessage.show('Please use valid time format', {cssClass: 'alert-danger', timeout: 3000});
-        // }
-        // // Twilio Credentials
-        // const accountSid = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
-        // const authToken = 'your_auth_token';
-        //
-        // // require the Twilio module and create a REST client
-        // const client = require('twilio')(accountSid, authToken);
-        //
-        // client.messages
-        //   .create({
-        //     to: '+19734946092',
-        //     from: '+12015711416',
-        //     body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
-        //     mediaUrl: 'https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg',
-        //   })
-        //   .then((message) => console.log(message.sid));
     };
-    DashboardComponent.prototype.onMsgSelectionSubmit = function () {
-        // Set the time when the message will be sent
+    // sendMessage2(promArr) {
+    //   Promise.all(promiseArr).then((results) => {
+    //     const formattedURL =  encodeURIComponent(results.join('\n \n'));
+    //     const phone = this.client.phone;
+    //
+    //     console.log('this.client.phone', this.client.phone);
+    //     this.apiCallService.setTimedSMS(this.client.phone, formattedURL, timeObj, this._id);
+    //   }).catch( err => {
+    //     console.log(err);
+    //   });
+    // }
+    DashboardComponent.prototype.onMsgSubmit = function () {
+        if (this.validateInputs()) {
+            this.sendMessage();
+        }
     };
     return DashboardComponent;
 }());
@@ -840,6 +866,8 @@ var RegisterComponent = (function () {
             email: this.email,
             phone: this.phone,
             password: this.password,
+            settings: {},
+            jobName: ""
         };
         // Required fields
         if (!this.validateService.validateRegister(user)) {
@@ -1171,8 +1199,13 @@ var ValidateService = (function () {
     };
     ValidateService.prototype.validateTime = function (time) {
         var re = /\b((1[0-2]|0?[1-9]):([0-5][0-9]) ([AaPp][Mm]))/;
-        console.log('Validate TIME', re.test(time));
         return re.test(time);
+    };
+    ValidateService.prototype.validateAlphaNumeric = function (input) {
+        var re = /^[a-zA-Z0-9_',\-#\/ ]*$/;
+        console.log('VALIDATE ALPHANUM', re.test(input.trim()));
+        console.log('input.trim() ', input.trim());
+        return re.test(input.trim()) && (input.trim().length > 0);
     };
     return ValidateService;
 }());
