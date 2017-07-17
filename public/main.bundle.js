@@ -521,7 +521,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "", ""]);
+exports.push([module.i, "#main {\n  text-align: center;\n}\n\n#icons {\n  margin: auto;\n}\n\n#text {\n  font:\n}\n", ""]);
 
 // exports
 
@@ -534,7 +534,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/home/home.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"jumbotron\">\n  <h1>Hello, world!</h1>\n  <p>...</p>\n  <p><a class=\"btn btn-primary btn-lg\" href=\"#\" role=\"button\">Learn more</a></p>\n</div>\n"
+module.exports = "<div id=\"main\">\n  <div id=\"icons\">\n    <img src=\"http://icons.iconarchive.com/icons/iconsmind/outline/512/Sunrise-icon.png\" alt=\"Sunrise\" id=\"sunrise-icon\" class=\"home-icons\">\n    <img src=\"http://www.iconarchive.com/download/i91329/icons8/windows-8/Mobile-Sms.ico\" alt=\"Text Message\" class=\"home-icons\">\n  </div>\n  <div>\n    <h4 id=\"text\">\n      Get daily texts sent to your phone with: <br/>\n      <span class=\"typing\"></span>\n    </h4>\n  </div>\n  <a routerLink=\"dashboard\" class=\"btn btn-primary btn-lg\">Go to Dashboard</a>\n\n</div>\n"
 
 /***/ }),
 
@@ -543,6 +543,8 @@ module.exports = "<div class=\"jumbotron\">\n  <h1>Hello, world!</h1>\n  <p>...<
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_typed_js__ = __webpack_require__("../../../../typed.js/lib/typed.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_typed_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_typed_js__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomeComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -554,13 +556,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
 var HomeComponent = (function () {
     function HomeComponent() {
     }
     HomeComponent.prototype.ngOnInit = function () {
     };
+    HomeComponent.prototype.ngAfterViewInit = function () {
+        var options = {
+            strings: ["Weather", "News Headlines", "Travel Time to Work", "Quote of the Day"],
+            typeSpeed: 40,
+            loop: true
+        };
+        var typing = new __WEBPACK_IMPORTED_MODULE_1_typed_js___default.a(".typing", options);
+    };
     return HomeComponent;
 }());
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])('typed'),
+    __metadata("design:type", Object)
+], HomeComponent.prototype, "typed", void 0);
 HomeComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'app-home',
@@ -1273,7 +1288,7 @@ __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dyna
 
 /***/ }),
 
-/***/ 0:
+/***/ 1:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__("../../../../../src/main.ts");
@@ -1281,5 +1296,5 @@ module.exports = __webpack_require__("../../../../../src/main.ts");
 
 /***/ })
 
-},[0]);
+},[1]);
 //# sourceMappingURL=main.bundle.js.map
