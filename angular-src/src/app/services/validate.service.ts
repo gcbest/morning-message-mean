@@ -6,7 +6,6 @@ export class ValidateService {
   constructor() { }
 
   validateRegister(user) {
-    console.log('validateRegister user', user);
     if (user.name == (false || undefined || "") || user.email == (false || undefined || "") || user.username == (false || undefined || "") || user.password == (false || undefined || "") || user.phone == (false || undefined || "")) {
       return false;
     } else {
@@ -34,8 +33,6 @@ export class ValidateService {
       return false;
     }
     const re = /^[a-zA-Z0-9_',\-#\/ ]*$/;
-    console.log('VALIDATE ALPHANUM', re.test(input.trim()));
-    console.log('input.trim() ', input.trim());
     return re.test(input.trim()) && (input.trim().length > 0);
   }
 }

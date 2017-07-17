@@ -11,6 +11,7 @@ import {ValidateService} from '../../services/validate.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
+
 export class DashboardComponent implements OnInit {
   // User Boolean Inputs
   hasWeather: Boolean = false;
@@ -34,7 +35,7 @@ export class DashboardComponent implements OnInit {
   // User object
   client;
 
-  // Icons
+  // Path to icon images
   iconsPath: String = '../../../assets/images/';
   weatherIcon: String = this.iconsPath + 'weather_icon.png';
   quoteIcon: String = this.iconsPath + 'quote_icon.jpg';
@@ -49,9 +50,9 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // Fill in user's settings on the page
     this.settingsService.getSettings(this._id).subscribe(data => {
       this.client = data.user;
-      console.log('data', data);
       if (data.user.settings) {
         this.hasWeather = data.user.settings.hasWeather;
         this.hasNews = data.user.settings.hasNews;
@@ -66,6 +67,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // Update user's selections
   onNewsChange(source) {
     this.newsSource = source;
   }
@@ -96,7 +98,7 @@ export class DashboardComponent implements OnInit {
   }
 
   setUserSelections() {
-    // User selections
+    // Create mostly empty object to be filled in
     var user = {
       _id: this._id,
       selections: {},
@@ -116,12 +118,10 @@ export class DashboardComponent implements OnInit {
       msgTime: this.msgTime
     };
 
-
-
     // Add promises to promise array
     var promiseArr = [];
 
-    // Iterate over the user's choices, if they are true make api call
+    // Iterate over the user's choices, if they selected the option, make api call
     for (var property in userSelections) {
       if (userSelections.hasOwnProperty(property)) {
         switch(property) {
@@ -129,7 +129,6 @@ export class DashboardComponent implements OnInit {
             if (userSelections[property] === true) {
               var weatherPromise = new Promise((resolve, reject) => {
                 this.apiCallService.getWeather(this.zipCode).then(data => {
-                  console.log('temp', data);
                   var temperature = data.main.temp;
                   var forecast = data.weather[0].main + ', ' + data.weather[0].description;
                   resolve("Today's Temperature: " + temperature + ' Degrees F \n' + forecast);
@@ -142,10 +141,8 @@ export class DashboardComponent implements OnInit {
             if (userSelections[property] === true) {
               var travelPromise = new Promise((resolve, reject) => {
                 this.apiCallService.getTravel(this.homeAddress, this.workAddress).then(travel_time => {
-                  console.log('TRAVEL_TIME before encoding', travel_time);
                   var travel_str = 'Estimated travel time to work: ' + travel_time;
                   travel_str = encodeURIComponent(travel_str).replace(/'/g, "%27");
-                  console.log('travel_str AFTER encoding', travel_str);
                   resolve(travel_str);
                 });
               });
@@ -156,10 +153,7 @@ export class DashboardComponent implements OnInit {
             if (userSelections[property] === true) {
               var quotePromise = new Promise((resolve, reject) => {
                 this.apiCallService.getQuote().then(quoteInfo => {
-                  console.log('Quote before encoding', quoteInfo);
                   var formattedQuote = quoteInfo.quote + '\n -' + quoteInfo.author;
-                  console.log('formattedQuote', formattedQuote);
-
                   formattedQuote = encodeURIComponent(formattedQuote);
                   this.quoteOfTheDay = formattedQuote;
                   if (quoteInfo.quote.length < 1) {
@@ -181,8 +175,8 @@ export class DashboardComponent implements OnInit {
                   "Google News": "google-news"
                 };
 
+                // API valid name
                 var sourceAPI = newsObj[this.newsSource];
-                console.log('sourceAPI', sourceAPI);
 
                 this.apiCallService.getNews(sourceAPI).then(articlesArr => {
                   var headline = "";
@@ -191,10 +185,7 @@ export class DashboardComponent implements OnInit {
                   }
                   // Convert left and right apostrophe's to regular apostrophes so they can be escaped
                   var escapedHeadline = headline.replace(/\u2019/g, "'").replace(/\u2018/g, "'");
-
-                  console.log('headline before enocoding', escapedHeadline);
                   headline = encodeURIComponent(escapedHeadline);
-                  console.log('headline AFTER encoding', headline);
                   resolve(headline);
                 });
               });
@@ -208,7 +199,6 @@ export class DashboardComponent implements OnInit {
     user.selections = userSelections;
     this.settingsService.setTopics(user).subscribe(data => {
       if (data) {
-        console.log('settingsService updated user', data);
         this.client = data;
       }
     });
@@ -218,9 +208,7 @@ export class DashboardComponent implements OnInit {
   // Resolve all the promises for the user's selections and send SMS
   sendMessageNow() {
     var promiseArr = this.setUserSelections();
-    console.log('PROMISE ARR', promiseArr);
     Promise.all(promiseArr).then((results) => {
-      console.log('results ', results);
       var formattedURL =  encodeURIComponent(results.join('\n \n'));
       var phone = this.client.phone;
       if (!this.validateInputs()) {
@@ -233,21 +221,12 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-
-  // Set the time when the message will be sent
-  setMsgTime() {
-
-
-  }
-
   // Stop sending daily text messages to user
   stopMsgs() {
-    console.log('before this.isActive');
-
     // Stop cron job
     this.apiCallService.cancelMsgs(this._id).subscribe(data => {
       if (data) {
-        console.log('after message canceled', data);
+        return data;
       }
     });
   }
@@ -274,14 +253,13 @@ export class DashboardComponent implements OnInit {
         return false;
       }
     }
-
     return true;
   }
 
+  // Ensure user enter valid data for all the inputs including time
   validateInputsWithTime() {
     if (!this.validateInputs()) return false;
     // Validate user's time input
-    console.log('reaching the validate time service');
     if (this.validateService.validateTime(this.msgTime)) {
       this.flashMessage.show('Message settings saved', {cssClass: 'alert-success', timeout: 3000});
       return true;
@@ -291,6 +269,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  // Message which will be sent at user-specified time
   sendDailyMessage() {
     // Grab the user's input
     var hour = parseInt(this.msgTime.slice(0, 2));
@@ -311,59 +290,18 @@ export class DashboardComponent implements OnInit {
       const formattedURL =  encodeURIComponent(results.join('\n \n'));
       const phone = this.client.phone;
 
-      console.log('this.client.phone', this.client.phone);
       this.apiCallService.setTimedSMS(this.client.phone, formattedURL, timeObj, this._id);
     }).catch( err => {
       console.log(err);
     });
   }
 
-  // sendMessage2(promArr) {
-  //   Promise.all(promiseArr).then((results) => {
-  //     const formattedURL =  encodeURIComponent(results.join('\n \n'));
-  //     const phone = this.client.phone;
-  //
-  //     console.log('this.client.phone', this.client.phone);
-  //     this.apiCallService.setTimedSMS(this.client.phone, formattedURL, timeObj, this._id);
-  //   }).catch( err => {
-  //     console.log(err);
-  //   });
-  // }
-
-
+  // Validate inputs and set scheduler to send message at specified time
   onMsgSubmit() {
-
     if (this.validateInputsWithTime()) {
       this.sendDailyMessage();
     }
   }
-
-
-
-
-
-
-
-
-
-
-    // // Twilio Credentials
-    // const accountSid = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
-    // const authToken = 'your_auth_token';
-    //
-    // // require the Twilio module and create a REST client
-    // const client = require('twilio')(accountSid, authToken);
-    //
-    // client.messages
-    //   .create({
-    //     to: '+19734946092',
-    //     from: '+12015711416',
-    //     body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
-    //     mediaUrl: 'https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg',
-    //   })
-    //   .then((message) => console.log(message.sid));
-
-
 }
 
 

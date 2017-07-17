@@ -225,7 +225,7 @@ var DashboardComponent = (function () {
         this.newsSource = "";
         // User's mongodb id
         this._id = localStorage.user.split('"')[3];
-        // Icons
+        // Path to icon images
         this.iconsPath = '../../../assets/images/';
         this.weatherIcon = this.iconsPath + 'weather_icon.png';
         this.quoteIcon = this.iconsPath + 'quote_icon.jpg';
@@ -234,9 +234,9 @@ var DashboardComponent = (function () {
     }
     DashboardComponent.prototype.ngOnInit = function () {
         var _this = this;
+        // Fill in user's settings on the page
         this.settingsService.getSettings(this._id).subscribe(function (data) {
             _this.client = data.user;
-            console.log('data', data);
             if (data.user.settings) {
                 _this.hasWeather = data.user.settings.hasWeather;
                 _this.hasNews = data.user.settings.hasNews;
@@ -250,6 +250,7 @@ var DashboardComponent = (function () {
             }
         });
     };
+    // Update user's selections
     DashboardComponent.prototype.onNewsChange = function (source) {
         this.newsSource = source;
     };
@@ -276,7 +277,7 @@ var DashboardComponent = (function () {
     };
     DashboardComponent.prototype.setUserSelections = function () {
         var _this = this;
-        // User selections
+        // Create mostly empty object to be filled in
         var user = {
             _id: this._id,
             selections: {},
@@ -296,7 +297,7 @@ var DashboardComponent = (function () {
         };
         // Add promises to promise array
         var promiseArr = [];
-        // Iterate over the user's choices, if they are true make api call
+        // Iterate over the user's choices, if they selected the option, make api call
         for (var property in userSelections) {
             if (userSelections.hasOwnProperty(property)) {
                 switch (property) {
@@ -304,7 +305,6 @@ var DashboardComponent = (function () {
                         if (userSelections[property] === true) {
                             var weatherPromise = new Promise(function (resolve, reject) {
                                 _this.apiCallService.getWeather(_this.zipCode).then(function (data) {
-                                    console.log('temp', data);
                                     var temperature = data.main.temp;
                                     var forecast = data.weather[0].main + ', ' + data.weather[0].description;
                                     resolve("Today's Temperature: " + temperature + ' Degrees F \n' + forecast);
@@ -317,10 +317,8 @@ var DashboardComponent = (function () {
                         if (userSelections[property] === true) {
                             var travelPromise = new Promise(function (resolve, reject) {
                                 _this.apiCallService.getTravel(_this.homeAddress, _this.workAddress).then(function (travel_time) {
-                                    console.log('TRAVEL_TIME before encoding', travel_time);
                                     var travel_str = 'Estimated travel time to work: ' + travel_time;
                                     travel_str = encodeURIComponent(travel_str).replace(/'/g, "%27");
-                                    console.log('travel_str AFTER encoding', travel_str);
                                     resolve(travel_str);
                                 });
                             });
@@ -331,9 +329,7 @@ var DashboardComponent = (function () {
                         if (userSelections[property] === true) {
                             var quotePromise = new Promise(function (resolve, reject) {
                                 _this.apiCallService.getQuote().then(function (quoteInfo) {
-                                    console.log('Quote before encoding', quoteInfo);
                                     var formattedQuote = quoteInfo.quote + '\n -' + quoteInfo.author;
-                                    console.log('formattedQuote', formattedQuote);
                                     formattedQuote = encodeURIComponent(formattedQuote);
                                     _this.quoteOfTheDay = formattedQuote;
                                     if (quoteInfo.quote.length < 1) {
@@ -354,8 +350,8 @@ var DashboardComponent = (function () {
                                     "CNN": "cnn",
                                     "Google News": "google-news"
                                 };
+                                // API valid name
                                 var sourceAPI = newsObj[_this.newsSource];
-                                console.log('sourceAPI', sourceAPI);
                                 _this.apiCallService.getNews(sourceAPI).then(function (articlesArr) {
                                     var headline = "";
                                     for (var i = 0; i < 3; i++) {
@@ -363,9 +359,7 @@ var DashboardComponent = (function () {
                                     }
                                     // Convert left and right apostrophe's to regular apostrophes so they can be escaped
                                     var escapedHeadline = headline.replace(/\u2019/g, "'").replace(/\u2018/g, "'");
-                                    console.log('headline before enocoding', escapedHeadline);
                                     headline = encodeURIComponent(escapedHeadline);
-                                    console.log('headline AFTER encoding', headline);
                                     resolve(headline);
                                 });
                             });
@@ -378,7 +372,6 @@ var DashboardComponent = (function () {
         user.selections = userSelections;
         this.settingsService.setTopics(user).subscribe(function (data) {
             if (data) {
-                console.log('settingsService updated user', data);
                 _this.client = data;
             }
         });
@@ -388,9 +381,7 @@ var DashboardComponent = (function () {
     DashboardComponent.prototype.sendMessageNow = function () {
         var _this = this;
         var promiseArr = this.setUserSelections();
-        console.log('PROMISE ARR', promiseArr);
         Promise.all(promiseArr).then(function (results) {
-            console.log('results ', results);
             var formattedURL = encodeURIComponent(results.join('\n \n'));
             var phone = _this.client.phone;
             if (!_this.validateInputs()) {
@@ -402,16 +393,12 @@ var DashboardComponent = (function () {
             console.log(err);
         });
     };
-    // Set the time when the message will be sent
-    DashboardComponent.prototype.setMsgTime = function () {
-    };
     // Stop sending daily text messages to user
     DashboardComponent.prototype.stopMsgs = function () {
-        console.log('before this.isActive');
         // Stop cron job
         this.apiCallService.cancelMsgs(this._id).subscribe(function (data) {
             if (data) {
-                console.log('after message canceled', data);
+                return data;
             }
         });
     };
@@ -439,11 +426,11 @@ var DashboardComponent = (function () {
         }
         return true;
     };
+    // Ensure user enter valid data for all the inputs including time
     DashboardComponent.prototype.validateInputsWithTime = function () {
         if (!this.validateInputs())
             return false;
         // Validate user's time input
-        console.log('reaching the validate time service');
         if (this.validateService.validateTime(this.msgTime)) {
             this.flashMessage.show('Message settings saved', { cssClass: 'alert-success', timeout: 3000 });
             return true;
@@ -453,6 +440,7 @@ var DashboardComponent = (function () {
             return false;
         }
     };
+    // Message which will be sent at user-specified time
     DashboardComponent.prototype.sendDailyMessage = function () {
         var _this = this;
         // Grab the user's input
@@ -472,23 +460,12 @@ var DashboardComponent = (function () {
         Promise.all(promiseArr).then(function (results) {
             var formattedURL = encodeURIComponent(results.join('\n \n'));
             var phone = _this.client.phone;
-            console.log('this.client.phone', _this.client.phone);
             _this.apiCallService.setTimedSMS(_this.client.phone, formattedURL, timeObj, _this._id);
         }).catch(function (err) {
             console.log(err);
         });
     };
-    // sendMessage2(promArr) {
-    //   Promise.all(promiseArr).then((results) => {
-    //     const formattedURL =  encodeURIComponent(results.join('\n \n'));
-    //     const phone = this.client.phone;
-    //
-    //     console.log('this.client.phone', this.client.phone);
-    //     this.apiCallService.setTimedSMS(this.client.phone, formattedURL, timeObj, this._id);
-    //   }).catch( err => {
-    //     console.log(err);
-    //   });
-    // }
+    // Validate inputs and set scheduler to send message at specified time
     DashboardComponent.prototype.onMsgSubmit = function () {
         if (this.validateInputsWithTime()) {
             this.sendDailyMessage();
@@ -1057,11 +1034,12 @@ var APICallService = (function () {
     APICallService.prototype.cancelMsgs = function (_id) {
         return this.http.post('/api/cancelsms', { _id: _id }).map(function (res) { return res.json(); });
     };
-    // helper function to fetch token from localStorage
+    // Helper function to fetch token from localStorage
     APICallService.prototype.loadToken = function () {
         var token = localStorage.getItem('id_token');
         this.authToken = token;
     };
+    // Add values to headers
     APICallService.prototype.appendHeaders = function () {
         var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["Headers"]();
         this.loadToken();
@@ -1238,7 +1216,6 @@ var ValidateService = (function () {
     function ValidateService() {
     }
     ValidateService.prototype.validateRegister = function (user) {
-        console.log('validateRegister user', user);
         if (user.name == (false || undefined || "") || user.email == (false || undefined || "") || user.username == (false || undefined || "") || user.password == (false || undefined || "") || user.phone == (false || undefined || "")) {
             return false;
         }
@@ -1263,8 +1240,6 @@ var ValidateService = (function () {
             return false;
         }
         var re = /^[a-zA-Z0-9_',\-#\/ ]*$/;
-        console.log('VALIDATE ALPHANUM', re.test(input.trim()));
-        console.log('input.trim() ', input.trim());
         return re.test(input.trim()) && (input.trim().length > 0);
     };
     return ValidateService;

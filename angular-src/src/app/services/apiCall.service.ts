@@ -50,12 +50,13 @@ export class APICallService {
     return this.http.post('/api/cancelsms', {_id: _id}).map(res => res.json());
   }
 
-  // helper function to fetch token from localStorage
+  // Helper function to fetch token from localStorage
   loadToken() {
     const token = localStorage.getItem('id_token');
     this.authToken = token;
   }
 
+  // Add values to headers
   appendHeaders() {
     let headers = new Headers();
     this.loadToken();

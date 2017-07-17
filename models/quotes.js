@@ -21,12 +21,6 @@ module.exports.getTodaysQuote = (callback) => {
     Quote.find(query, callback);
 };
 
-// module.exports.checkTomorrowsQuote = (callback) => {
-//
-//     const query = {"date": tomorrowsDate};
-//     Quote.find(query, callback);
-// };
-
 module.exports.addQuote = (quote, callback) => {
     const todaysDate = moment().format("YYYY-MM-DD");
     const tomorrowsDate = moment().add(1, 'day').format("YYYY-MM-DD");
