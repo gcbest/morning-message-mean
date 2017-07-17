@@ -10,8 +10,6 @@ import {AuthService} from '../../services/auth.service';
 })
 
 export class HomeComponent implements OnInit {
-  user;
-
   // Icons
   iconsPath: String = '../../../assets/images/';
   sunriseIcon: String = this.iconsPath + 'sunrise_icon.png';

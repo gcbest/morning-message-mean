@@ -1,4 +1,4 @@
 module.exports = {
-  database: 'mongodb://localhost:27017/morning_message',
-  secret: 'The_secret_for_the_token'
+  database: 'mongodb://jrbest:eduardo@ds161742.mlab.com:61742/heroku_m2jnfr4h',
+  secret: 'The_secret_is_in_the_sauce'
 };
