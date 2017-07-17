@@ -531,7 +531,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/home/home.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"main\">\n  <div id=\"icons\">\n    <img src=\"http://icons.iconarchive.com/icons/iconsmind/outline/512/Sunrise-icon.png\" alt=\"Sunrise\" id=\"sunrise-icon\" class=\"home-icons\">\n    <img src=\"http://www.iconarchive.com/download/i91329/icons8/windows-8/Mobile-Sms.ico\" alt=\"Text Message\" class=\"home-icons\">\n  </div>\n  <div>\n    <h4 id=\"text\">\n      Get daily texts sent to your phone with: <br/>\n      <span class=\"typing\"></span>\n    </h4>\n  </div>\n  <a routerLink=\"dashboard\" class=\"btn btn-primary btn-lg\">Go to Dashboard</a>\n\n</div>\n"
+module.exports = "<div id=\"main\">\n  <div>\n    <h2 id=\"text\">\n      Get daily texts sent to your phone with: <br/>\n      <span class=\"typing\"></span>\n    </h2>\n  </div>\n  <div id=\"icons\">\n    <img src=\"http://icons.iconarchive.com/icons/iconsmind/outline/512/Sunrise-icon.png\" alt=\"Sunrise\" id=\"sunrise-icon\" class=\"home-icons\">\n    <img src=\"http://www.iconarchive.com/download/i91329/icons8/windows-8/Mobile-Sms.ico\" alt=\"Text Message\" class=\"home-icons\">\n  </div>\n  <a routerLink=\"dashboard\" class=\"btn btn-primary btn-lg\">Go to Dashboard</a>\n</div>\n"
 
 /***/ }),
 
@@ -697,7 +697,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/navbar/navbar.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-default\">\n  <div class=\"container\">\n    <div class=\"navbar-header\">\n      <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n        <span class=\"sr-only\">Toggle navigation</span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n      </button>\n      <a class=\"navbar-brand\" href=\"#\">Morning Message</a>\n    </div>\n    <div id=\"navbar\" class=\"collapse navbar-collapse\">\n      <ul class=\"nav navbar-nav navbar-left\">\n        <li\n          routerLinkActive=\"active\"\n        [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"/\">Home</a>\n        </li>\n      </ul>\n\n      <ul class=\"nav navbar-nav navbar-right\">\n        <li\n          *ngIf=\"authService.loggedIn()\"\n          routerLinkActive=\"active\"\n          [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"dashboard\">Dashboard</a>\n        </li>\n        <li\n          *ngIf=\"authService.loggedIn()\"\n          routerLinkActive=\"active\"\n          [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"profile\">Profile</a>\n        </li>\n        <li\n          *ngIf=\"!authService.loggedIn()\"\n          routerLinkActive=\"active\"\n          [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"login\">Login</a>\n        </li>\n        <li\n          *ngIf=\"!authService.loggedIn()\"\n          routerLinkActive=\"active\"\n          [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"register\">Register</a>\n        </li>\n        <li\n          *ngIf=\"authService.loggedIn()\">\n          <a (click)=\"onLogoutClick()\" href=\"#\">Logout</a>\n        </li>\n      </ul>\n    </div><!--/.nav-collapse -->\n  </div>\n</nav>\n"
+module.exports = "<nav class=\"navbar navbar-default\">\n  <div class=\"container\">\n    <div class=\"navbar-header\">\n      <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\"\n              (click)=\"toggleMenu()\">\n        <span class=\"sr-only\">Toggle navigation</span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n      </button>\n      <a class=\"navbar-brand\" routerLink=\"/\">Morning Message</a>\n    </div>\n    <div id=\"navbar\" class=\"collapse navbar-collapse\"\n         [ngClass]=\"{ 'in': isIn }\">\n      <ul class=\"nav navbar-nav navbar-left\">\n        <li\n          routerLinkActive=\"active\"\n        [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"/\">Home</a>\n        </li>\n      </ul>\n\n      <ul class=\"nav navbar-nav navbar-right\">\n        <li\n          *ngIf=\"authService.loggedIn()\"\n          routerLinkActive=\"active\"\n          [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"dashboard\">Dashboard</a>\n        </li>\n        <li\n          *ngIf=\"!authService.loggedIn()\"\n          routerLinkActive=\"active\"\n          [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"login\">Login</a>\n        </li>\n        <li\n          *ngIf=\"!authService.loggedIn()\"\n          routerLinkActive=\"active\"\n          [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"register\">Register</a>\n        </li>\n        <li\n          *ngIf=\"authService.loggedIn()\">\n          <a (click)=\"onLogoutClick()\" href=\"#\">Logout</a>\n        </li>\n      </ul>\n    </div><!--/.nav-collapse -->\n  </div>\n</nav>\n"
 
 /***/ }),
 
@@ -729,8 +729,13 @@ var NavbarComponent = (function () {
         this.authService = authService;
         this.router = router;
         this.flashMessage = flashMessage;
+        this.isIn = false; // store state
     }
     NavbarComponent.prototype.ngOnInit = function () {
+    };
+    NavbarComponent.prototype.toggleMenu = function () {
+        var bool = this.isIn;
+        this.isIn = bool === false;
     };
     NavbarComponent.prototype.onLogoutClick = function () {
         this.authService.logout();
