@@ -225,6 +225,7 @@ var DashboardComponent = (function () {
         this.newsSource = "";
         // User's mongodb id
         this._id = localStorage.user.split('"')[3];
+        // Icons
         this.iconsPath = '../../../assets/images/';
         this.weatherIcon = this.iconsPath + 'weather_icon.png';
         this.quoteIcon = this.iconsPath + 'quote_icon.jpg';
@@ -393,7 +394,6 @@ var DashboardComponent = (function () {
             var formattedURL = encodeURIComponent(results.join('\n \n'));
             var phone = _this.client.phone;
             if (!_this.validateInputs()) {
-                console.log("INVALUD");
                 return;
             }
             _this.apiCallService.sendSMS(phone, formattedURL);
@@ -518,7 +518,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "#main {\n  text-align: center;\n}\n\n#icons {\n  margin: auto;\n}\n\n#text {\n\n}\n", ""]);
+exports.push([module.i, "#main {\n  text-align: center;\n}\n\n#icons {\n  margin: auto;\n}\n\n.cta {\n  margin-top: 20px;\n}\n\n.home-icons {\n  max-width: 100%;\n  display:inline-block;\n  height: auto;\n}\n", ""]);
 
 // exports
 
@@ -531,7 +531,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/home/home.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"main\">\n  <div>\n    <h2 id=\"text\">\n      Get daily texts sent to your phone with: <br/>\n      <span class=\"typing\"></span>\n    </h2>\n  </div>\n  <div id=\"icons\">\n    <img src=\"http://icons.iconarchive.com/icons/iconsmind/outline/512/Sunrise-icon.png\" alt=\"Sunrise\" id=\"sunrise-icon\" class=\"home-icons\">\n    <img src=\"http://www.iconarchive.com/download/i91329/icons8/windows-8/Mobile-Sms.ico\" alt=\"Text Message\" class=\"home-icons\">\n  </div>\n  <a routerLink=\"dashboard\" class=\"btn btn-primary btn-lg\">Go to Dashboard</a>\n</div>\n"
+module.exports = "<div id=\"main\">\n  <div>\n    <h2 id=\"text\">\n      Get daily texts sent to your phone with: <br/>\n      <span class=\"typing\"></span>\n    </h2>\n  </div>\n  <a *ngIf=\"user; else sign_up\" routerLink=\"dashboard\" class=\"btn btn-primary btn-lg cta\">Go to Dashboard</a>\n  <ng-template #sign_up>\n    <a routerLink=\"register\" class=\"btn btn-primary btn-lg cta\">Sign Up Today!</a>\n  </ng-template>\n  <div class=\"row\" id=\"icons\">\n    <div class=\"col-sm-12\">\n      <img [src]=\"sunriseIcon\" alt=\"Sunrise\" class=\"home-icons\">\n      <img [src]=\"smsIcon\" alt=\"Text Message\" class=\"home-icons\">\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -542,6 +542,7 @@ module.exports = "<div id=\"main\">\n  <div>\n    <h2 id=\"text\">\n      Get da
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_typed_js__ = __webpack_require__("../../../../typed.js/lib/typed.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_typed_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_typed_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service__ = __webpack_require__("../../../../../src/app/services/auth.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomeComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -554,10 +555,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
 var HomeComponent = (function () {
-    function HomeComponent() {
+    function HomeComponent(authService) {
+        this.authService = authService;
+        // Icons
+        this.iconsPath = '../../../assets/images/';
+        this.sunriseIcon = this.iconsPath + 'sunrise_icon.png';
+        this.smsIcon = this.iconsPath + 'sms_icon.ico';
     }
     HomeComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.authService.getProfile().subscribe(function (profile) {
+            _this.user = profile.user;
+        }, function (err) {
+            console.log(err);
+            return false;
+        });
     };
     HomeComponent.prototype.ngAfterViewInit = function () {
         var options = {
@@ -569,19 +583,16 @@ var HomeComponent = (function () {
     };
     return HomeComponent;
 }());
-__decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])('typed'),
-    __metadata("design:type", Object)
-], HomeComponent.prototype, "typed", void 0);
 HomeComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'app-home',
         template: __webpack_require__("../../../../../src/app/components/home/home.component.html"),
         styles: [__webpack_require__("../../../../../src/app/components/home/home.component.css")]
     }),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__services_auth_service__["a" /* AuthService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__services_auth_service__["a" /* AuthService */]) === "function" && _a || Object])
 ], HomeComponent);
 
+var _a;
 //# sourceMappingURL=home.component.js.map
 
 /***/ }),

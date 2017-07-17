@@ -34,6 +34,7 @@ export class DashboardComponent implements OnInit {
   // User object
   client;
 
+  // Icons
   iconsPath: String = '../../../assets/images/';
   weatherIcon: String = this.iconsPath + 'weather_icon.png';
   quoteIcon: String = this.iconsPath + 'quote_icon.jpg';
@@ -223,7 +224,6 @@ export class DashboardComponent implements OnInit {
       var formattedURL =  encodeURIComponent(results.join('\n \n'));
       var phone = this.client.phone;
       if (!this.validateInputs()) {
-        console.log("INVALUD")
         return;
       }
       this.apiCallService.sendSMS(phone, formattedURL);

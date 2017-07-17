@@ -6,6 +6,12 @@
   margin: auto;
 }
 
-#text {
+.cta {
+  margin-top: 20px;
+}
 
+.home-icons {
+  max-width: 100%;
+  display:inline-block;
+  height: auto;
 }
