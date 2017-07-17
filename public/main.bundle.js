@@ -539,7 +539,7 @@ var HomeComponent = (function () {
         // Icons
         this.iconsPath = '../../../assets/images/';
         this.sunriseIcon = this.iconsPath + 'sunrise_icon.png';
-        this.smsIcon = this.iconsPath + 'sms_icon.ico';
+        this.smsIcon = this.iconsPath + 'sms_icon.jpg';
     }
     HomeComponent.prototype.ngOnInit = function () {
     };

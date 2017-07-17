@@ -17,6 +17,9 @@ router.get('/weather', passport.authenticate('jwt', {session: false}), (req, res
 
     axios.get(requestURL).then(function(response) {
         res.json(response.data);
+    }, function (rejection) {
+        console.log(rejection);
+        return;
     });
 });
 
