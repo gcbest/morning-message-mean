@@ -531,7 +531,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/home/home.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"main\">\n  <div>\n    <h2 id=\"text\">\n      Get daily texts sent to your phone with: <br/>\n      <span class=\"typing\"></span>\n    </h2>\n  </div>\n  <a *ngIf=\"user; else sign_up\" routerLink=\"dashboard\" class=\"btn btn-primary btn-lg cta\">Go to Dashboard</a>\n  <ng-template #sign_up>\n    <a routerLink=\"register\" class=\"btn btn-primary btn-lg cta\">Sign Up Today!</a>\n  </ng-template>\n  <div class=\"row\" id=\"icons\">\n    <div class=\"col-sm-12\">\n      <img [src]=\"sunriseIcon\" alt=\"Sunrise\" class=\"home-icons\">\n      <img [src]=\"smsIcon\" alt=\"Text Message\" class=\"home-icons\">\n    </div>\n  </div>\n</div>\n"
+module.exports = "<div id=\"main\">\n  <div>\n    <h2 id=\"text\">\n      Get daily texts sent to your phone with: <br/>\n      <span class=\"typing\"></span>\n    </h2>\n  </div>\n  <a *ngIf=\"authService.loggedIn(); else sign_up\" routerLink=\"dashboard\" class=\"btn btn-primary btn-lg cta\">Go to Dashboard</a>\n  <ng-template #sign_up>\n    <a routerLink=\"register\" class=\"btn btn-primary btn-lg cta\">Sign Up Today!</a>\n  </ng-template>\n  <div class=\"row\" id=\"icons\">\n    <div class=\"col-sm-12\">\n      <img [src]=\"sunriseIcon\" alt=\"Sunrise\" class=\"home-icons\">\n      <img [src]=\"smsIcon\" alt=\"Text Message\" class=\"home-icons\">\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -565,13 +565,6 @@ var HomeComponent = (function () {
         this.smsIcon = this.iconsPath + 'sms_icon.ico';
     }
     HomeComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.authService.getProfile().subscribe(function (profile) {
-            _this.user = profile.user;
-        }, function (err) {
-            console.log(err);
-            return false;
-        });
     };
     HomeComponent.prototype.ngAfterViewInit = function () {
         var options = {

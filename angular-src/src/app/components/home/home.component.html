@@ -5,7 +5,7 @@
       <span class="typing"></span>
     </h2>
   </div>
-  <a *ngIf="user; else sign_up" routerLink="dashboard" class="btn btn-primary btn-lg cta">Go to Dashboard</a>
+  <a *ngIf="authService.loggedIn(); else sign_up" routerLink="dashboard" class="btn btn-primary btn-lg cta">Go to Dashboard</a>
   <ng-template #sign_up>
     <a routerLink="register" class="btn btn-primary btn-lg cta">Sign Up Today!</a>
   </ng-template>

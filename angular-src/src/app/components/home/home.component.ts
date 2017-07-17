@@ -17,16 +17,10 @@ export class HomeComponent implements OnInit {
   sunriseIcon: String = this.iconsPath + 'sunrise_icon.png';
   smsIcon: String = this.iconsPath + 'sms_icon.ico';
 
-  constructor(private authService: AuthService) { }
+  constructor(public authService: AuthService) { }
 
   ngOnInit() {
-    this.authService.getProfile().subscribe(profile => {
-        this.user = profile.user
-      },
-      err => {
-        console.log(err);
-        return false;
-      });
+
   }
 
   ngAfterViewInit(){
