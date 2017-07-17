@@ -30,6 +30,10 @@ export class ValidateService {
   }
 
   validateAlphaNumeric(input) {
+    // debugger;
+    if (typeof input == 'undefined') {
+      return false;
+    }
     const re = /^[a-zA-Z0-9_',\-#\/ ]*$/;
     console.log('VALIDATE ALPHANUM', re.test(input.trim()));
     console.log('input.trim() ', input.trim());

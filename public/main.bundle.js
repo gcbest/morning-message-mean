@@ -1240,6 +1240,10 @@ var ValidateService = (function () {
         return re.test(time);
     };
     ValidateService.prototype.validateAlphaNumeric = function (input) {
+        // debugger;
+        if (typeof input == 'undefined') {
+            return false;
+        }
         var re = /^[a-zA-Z0-9_',\-#\/ ]*$/;
         console.log('VALIDATE ALPHANUM', re.test(input.trim()));
         console.log('input.trim() ', input.trim());

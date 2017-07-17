@@ -281,7 +281,7 @@ export class DashboardComponent implements OnInit {
   validateInputsWithTime() {
     if (!this.validateInputs()) return false;
     // Validate user's time input
-    console.log('reaching the validate time service')
+    console.log('reaching the validate time service');
     if (this.validateService.validateTime(this.msgTime)) {
       this.flashMessage.show('Message settings saved', {cssClass: 'alert-success', timeout: 3000});
       return true;
