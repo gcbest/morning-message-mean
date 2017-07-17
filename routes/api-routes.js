@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const stringify = require('json-stringify-safe');
+const schedule = require('node-schedule');
+const passport = require('passport');
+
 const User = require('../models/users');
 const Quote = require('../models/quotes');
-
-const schedule = require('node-schedule');
-
 const api_keys = require('../config/api');
 
-router.get('/weather', (req, res) => {
+router.get('/weather', passport.authenticate('jwt', {session: false}), (req, res) => {
     console.log('req.query.location: ', req.query.location);
     const OPEN_WEATHER_MAP_URL = `http://api.openweathermap.org/data/2.5/weather?appid=${api_keys.weatherAppID}&units=imperial`;
 
@@ -22,7 +22,7 @@ router.get('/weather', (req, res) => {
     });
 });
 
-router.get('/news', (req, res) => {
+router.get('/news', passport.authenticate('jwt', {session: false}), (req, res) => {
     const source = req.query.source;
     const NEWS_API_URL = `https://newsapi.org/v1/articles?source=${source}&sortBy=top&apiKey=96cc8c5dfcc34d8797a4fdeb9f2b5d43`;
 
@@ -31,7 +31,7 @@ router.get('/news', (req, res) => {
     });
 });
 
-router.get('/travel', (req, res) => {
+router.get('/travel', passport.authenticate('jwt', {session: false}), (req, res) => {
     const origin = req.query.origin;
     const destination = req.query.destination;
     const MAPS_API_URL = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${api_keys.mapsAPIKey}`;
@@ -42,7 +42,7 @@ router.get('/travel', (req, res) => {
     });
 });
 
-router.get('/quote', (req,res) => {
+router.get('/quote', passport.authenticate('jwt', {session: false}), (req,res) => {
    // Rate limit 10 calls per hour
     const QUOTES_URL = 'http://quotes.rest/qod.json?category=inspire';
     // let quoteOfTheDay = new Quote({quote: {name: 'belive in yoself', date: '2017-07-17'}});
@@ -89,7 +89,7 @@ router.get('/quote', (req,res) => {
 });
 
 // SMS will be sent immediately
-router.get('/sendsms', (req, res) => {
+router.get('/sendsms', passport.authenticate('jwt', {session: false}), (req, res) => {
     var MESSAGING_API_URL = `https://rest.nexmo.com/sms/json?api_key=${api_keys.nexmoAPIKey}&api_secret=${api_keys.nexmoAPISecret}&to=${req.query.phone_num}&from=12035338496&text=${req.query.text}`;
     console.log('nexmo: ', MESSAGING_API_URL);
     axios.get(MESSAGING_API_URL).then(function(response) {
@@ -101,7 +101,7 @@ router.get('/sendsms', (req, res) => {
 });
 
 // SMS will only be sent at the time the user specifies
-router.get('/timedsms', (req, res) => {
+router.get('/timedsms', passport.authenticate('jwt', {session: false}), (req, res) => {
     var rule = new schedule.RecurrenceRule();
     rule.dayOfWeek = [new schedule.Range(0, 6)];
     rule.minute = parseInt(req.query.min);

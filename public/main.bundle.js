@@ -652,7 +652,7 @@ var LoginComponent = (function () {
             username: this.username,
             password: this.password
         };
-        this.authService.authenticateUser(user).subscribe(function (data) {
+        this.sub = this.authService.authenticateUser(user).subscribe(function (data) {
             if (data.success) {
                 _this.authService.storeUserData(data.token, data.user);
                 _this.flashMessage.show('You are now logged in', { cssClass: 'alert-success', timeout: 5000 });
@@ -701,7 +701,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/navbar/navbar.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-default\">\n  <div class=\"container\">\n    <div class=\"navbar-header\">\n      <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\"\n              (click)=\"toggleMenu()\">\n        <span class=\"sr-only\">Toggle navigation</span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n      </button>\n      <a class=\"navbar-brand\" routerLink=\"/\">Morning Message</a>\n    </div>\n    <div id=\"navbar\" class=\"collapse navbar-collapse\"\n         [ngClass]=\"{ 'in': isIn }\">\n      <ul class=\"nav navbar-nav navbar-left\">\n        <li\n          routerLinkActive=\"active\"\n        [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"/\">Home</a>\n        </li>\n      </ul>\n\n      <ul class=\"nav navbar-nav navbar-right\">\n        <li\n          *ngIf=\"authService.loggedIn()\"\n          routerLinkActive=\"active\"\n          [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"dashboard\">Dashboard</a>\n        </li>\n        <li\n          *ngIf=\"!authService.loggedIn()\"\n          routerLinkActive=\"active\"\n          [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"login\">Login</a>\n        </li>\n        <li\n          *ngIf=\"!authService.loggedIn()\"\n          routerLinkActive=\"active\"\n          [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"register\">Register</a>\n        </li>\n        <li\n          *ngIf=\"authService.loggedIn()\">\n          <a (click)=\"onLogoutClick()\" href=\"#\">Logout</a>\n        </li>\n      </ul>\n    </div><!--/.nav-collapse -->\n  </div>\n</nav>\n"
+module.exports = "<nav class=\"navbar navbar-default\">\n  <div class=\"container\">\n    <div class=\"navbar-header\">\n      <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\"\n              (click)=\"toggleMenu()\">\n        <span class=\"sr-only\">Toggle navigation</span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n      </button>\n      <a class=\"navbar-brand\" routerLink=\"/\">Morning Message</a>\n    </div>\n    <div id=\"navbar\" class=\"collapse navbar-collapse\"\n         [ngClass]=\"{ 'in': isIn }\">\n      <ul class=\"nav navbar-nav navbar-left\">\n        <li\n          routerLinkActive=\"active\"\n        [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"/\">Home</a>\n        </li>\n      </ul>\n\n      <ul class=\"nav navbar-nav navbar-right\">\n        <li\n          *ngIf=\"authService.loggedIn()\"\n          routerLinkActive=\"active\"\n          [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"dashboard\">Dashboard</a>\n        </li>\n        <li\n          *ngIf=\"!authService.loggedIn()\"\n          routerLinkActive=\"active\"\n          [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"login\">Login</a>\n        </li>\n        <li\n          *ngIf=\"!authService.loggedIn()\"\n          routerLinkActive=\"active\"\n          [routerLinkActiveOptions]=\"{exact: true}\">\n          <a routerLink=\"register\">Register</a>\n        </li>\n        <li\n          *ngIf=\"authService.loggedIn()\">\n          <a (click)=\"onLogoutClick()\">Logout</a>\n        </li>\n      </ul>\n    </div><!--/.nav-collapse -->\n  </div>\n</nav>\n"
 
 /***/ }),
 
@@ -745,6 +745,7 @@ var NavbarComponent = (function () {
         this.authService.logout();
         this.flashMessage.show('You are logged out', { cssClass: 'alert-success', timeout: 3000 });
         this.router.navigate(['/login']);
+        return false;
     };
     return NavbarComponent;
 }());
@@ -1026,29 +1027,47 @@ var APICallService = (function () {
     }
     // Weather API
     APICallService.prototype.getWeather = function (location) {
-        return this.http.get("/api/weather?location=" + location).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+        var headers = this.appendHeaders();
+        return this.http.get("/api/weather?location=" + location, { headers: headers }).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     // News API
     APICallService.prototype.getNews = function (source) {
-        return this.http.get("/api/news?source=" + source).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+        var headers = this.appendHeaders();
+        return this.http.get("/api/news?source=" + source, { headers: headers }).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     // Directions API
     APICallService.prototype.getTravel = function (homeAddress, workAddress) {
-        return this.http.get("/api/travel?origin=" + homeAddress + "&destination=" + workAddress).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+        var headers = this.appendHeaders();
+        return this.http.get("/api/travel?origin=" + homeAddress + "&destination=" + workAddress, { headers: headers }).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     // Quotes API
     APICallService.prototype.getQuote = function () {
-        return this.http.get('/api/quote').map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+        var headers = this.appendHeaders();
+        return this.http.get('/api/quote', { headers: headers }).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     // Messaging API
     APICallService.prototype.sendSMS = function (phoneNum, text) {
-        return this.http.get("/api/sendsms?phone_num=" + phoneNum + "&text=" + text).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+        var headers = this.appendHeaders();
+        return this.http.get("/api/sendsms?phone_num=" + phoneNum + "&text=" + text, { headers: headers }).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     APICallService.prototype.setTimedSMS = function (phoneNum, text, timeObj, id) {
-        return this.http.get("/api/timedsms/?phone_num=" + phoneNum + "&text=" + text + "&min=" + timeObj.min + "&hour=" + timeObj.hour + "&_id=" + id).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
+        var headers = this.appendHeaders();
+        return this.http.get("/api/timedsms/?phone_num=" + phoneNum + "&text=" + text + "&min=" + timeObj.min + "&hour=" + timeObj.hour + "&_id=" + id, { headers: headers }).map(function (res) { return res.json(); }).toPromise().then(function (data) { return data; });
     };
     APICallService.prototype.cancelMsgs = function (_id) {
         return this.http.post('/api/cancelsms', { _id: _id }).map(function (res) { return res.json(); });
+    };
+    // helper function to fetch token from localStorage
+    APICallService.prototype.loadToken = function () {
+        var token = localStorage.getItem('id_token');
+        this.authToken = token;
+    };
+    APICallService.prototype.appendHeaders = function () {
+        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["Headers"]();
+        this.loadToken();
+        headers.append('Authorization', this.authToken);
+        headers.append('Content-Type', 'application/json');
+        return headers;
     };
     return APICallService;
 }());
@@ -1240,7 +1259,6 @@ var ValidateService = (function () {
         return re.test(time);
     };
     ValidateService.prototype.validateAlphaNumeric = function (input) {
-        // debugger;
         if (typeof input == 'undefined') {
             return false;
         }

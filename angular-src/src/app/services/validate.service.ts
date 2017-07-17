@@ -30,7 +30,6 @@ export class ValidateService {
   }
 
   validateAlphaNumeric(input) {
-    // debugger;
     if (typeof input == 'undefined') {
       return false;
     }

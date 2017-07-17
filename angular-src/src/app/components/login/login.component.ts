@@ -12,6 +12,7 @@ import {AuthService} from '../../services/auth.service';
 export class LoginComponent implements OnInit {
   username: String;
   password: String;
+  sub;
 
   constructor(
     private authService: AuthService,
@@ -28,7 +29,7 @@ export class LoginComponent implements OnInit {
       password: this.password
     };
 
-    this.authService.authenticateUser(user).subscribe(data => {
+    this.sub = this.authService.authenticateUser(user).subscribe(data => {
       if (data.success) {
         this.authService.storeUserData(data.token, data.user);
         this.flashMessage.show('You are now logged in', {cssClass: 'alert-success', timeout: 5000});
@@ -38,6 +39,10 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/login'])
       }
     });
-
   }
+
+  // ngOnDestroy() {
+  //   this.sub.detach(); // try this
+  //   // this.authService.unsubscribe(); // for me I was detect changes inside "subscribe" so was enough for me to just unsubscribe;
+  // }
 }
