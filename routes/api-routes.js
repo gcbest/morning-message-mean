@@ -29,6 +29,9 @@ router.get('/news', passport.authenticate('jwt', {session: false}), (req, res) =
 
     axios.get(NEWS_API_URL).then(function(response) {
         res.json(response.data.articles);
+    }, function (rejection) {
+        console.log(rejection);
+        return;
     });
 });
 
@@ -39,6 +42,9 @@ router.get('/travel', passport.authenticate('jwt', {session: false}), (req, res)
 
     axios.get(MAPS_API_URL).then(function(response) {
         res.json(response.data.routes[0].legs[0].duration.text);
+    }, function (rejection) {
+        console.log(rejection);
+        return;
     });
 });
 

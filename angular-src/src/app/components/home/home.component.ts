@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit {
   // Icons
   iconsPath: String = '../../../assets/images/';
   sunriseIcon: String = this.iconsPath + 'sunrise_icon.png';
-  smsIcon: String = this.iconsPath + 'sms_icon.jpg';
+  smsIcon: String = this.iconsPath + 'text_msg_icon.png';
 
   constructor(public authService: AuthService) { }
 
