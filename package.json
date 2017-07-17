@@ -22,6 +22,6 @@
     "passport": "*",
     "passport-jwt": "*"
   },
-  "author": "Brad Traversy",
+  "author": "Godfrey Best",
   "license": "ISC"
 }

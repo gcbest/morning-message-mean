@@ -15,7 +15,7 @@ export class AuthService {
     // add a value to headers
     headers.append('Content-Type', 'application/json');
     // return observable
-    return this.http.post('http://localhost:4000/users/register', user, {headers: headers})
+    return this.http.post('/users/register', user, {headers: headers})
       .map(res => res.json());
   }
 
@@ -24,7 +24,7 @@ export class AuthService {
     // add a value to headers
     headers.append('Content-Type', 'application/json');
     // return observable
-    return this.http.post('http://localhost:4000/users/authenticate', user, {headers: headers})
+    return this.http.post('/users/authenticate', user, {headers: headers})
       .map(res => res.json());
   }
 
@@ -34,7 +34,7 @@ export class AuthService {
     headers.append('Authorization', this.authToken);
     headers.append('Content-Type', 'application/json');
     // return observable
-    return this.http.get('http://localhost:4000/users/profile', {headers: headers})
+    return this.http.get('/users/profile', {headers: headers})
       .map(res => res.json());
   }
 

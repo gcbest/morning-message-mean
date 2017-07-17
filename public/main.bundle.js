@@ -1092,7 +1092,7 @@ var AuthService = (function () {
         // add a value to headers
         headers.append('Content-Type', 'application/json');
         // return observable
-        return this.http.post('http://localhost:4000/users/register', user, { headers: headers })
+        return this.http.post('/users/register', user, { headers: headers })
             .map(function (res) { return res.json(); });
     };
     AuthService.prototype.authenticateUser = function (user) {
@@ -1100,7 +1100,7 @@ var AuthService = (function () {
         // add a value to headers
         headers.append('Content-Type', 'application/json');
         // return observable
-        return this.http.post('http://localhost:4000/users/authenticate', user, { headers: headers })
+        return this.http.post('/users/authenticate', user, { headers: headers })
             .map(function (res) { return res.json(); });
     };
     AuthService.prototype.getProfile = function () {
@@ -1109,7 +1109,7 @@ var AuthService = (function () {
         headers.append('Authorization', this.authToken);
         headers.append('Content-Type', 'application/json');
         // return observable
-        return this.http.get('http://localhost:4000/users/profile', { headers: headers })
+        return this.http.get('/users/profile', { headers: headers })
             .map(function (res) { return res.json(); });
     };
     AuthService.prototype.storeUserData = function (token, user) {
