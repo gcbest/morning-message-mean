@@ -226,6 +226,7 @@ export class DashboardComponent implements OnInit {
     // Stop cron job
     this.apiCallService.cancelMsgs(this._id).subscribe(data => {
       if (data) {
+        this.flashMessage.show('Daily message successfully canceled', {cssClass: 'alert-success', timeout: 3000});
         return data;
       }
     });
@@ -261,7 +262,7 @@ export class DashboardComponent implements OnInit {
     if (!this.validateInputs()) return false;
     // Validate user's time input
     if (this.validateService.validateTime(this.msgTime)) {
-      this.flashMessage.show('Message settings saved', {cssClass: 'alert-success', timeout: 3000});
+      this.flashMessage.show('Daily message settings saved', {cssClass: 'alert-success', timeout: 3000});
       return true;
     } else {
       this.flashMessage.show('Please use valid time format', {cssClass: 'alert-danger', timeout: 3000});

@@ -395,9 +395,11 @@ var DashboardComponent = (function () {
     };
     // Stop sending daily text messages to user
     DashboardComponent.prototype.stopMsgs = function () {
+        var _this = this;
         // Stop cron job
         this.apiCallService.cancelMsgs(this._id).subscribe(function (data) {
             if (data) {
+                _this.flashMessage.show('Daily message successfully canceled', { cssClass: 'alert-success', timeout: 3000 });
                 return data;
             }
         });
@@ -432,7 +434,7 @@ var DashboardComponent = (function () {
             return false;
         // Validate user's time input
         if (this.validateService.validateTime(this.msgTime)) {
-            this.flashMessage.show('Message settings saved', { cssClass: 'alert-success', timeout: 3000 });
+            this.flashMessage.show('Daily message settings saved', { cssClass: 'alert-success', timeout: 3000 });
             return true;
         }
         else {
