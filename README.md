@@ -2,7 +2,7 @@
 
 ### The News you Need to Start your Day
 
-After creating your account simply select the information you would like and have that information texted to your phone.
+After creating your account simply select the information you would like, and have that information texted to your phone.
 
 
 
