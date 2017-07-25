@@ -1,6 +1,7 @@
 # Morning Message
 
 ### The News you Need to Start your Day
+[https://morning-message.herokuapp.com/] (https://morning-message.herokuapp.com/)
 
 After creating your account simply select the information you would like, and have that information texted to your phone.
 
